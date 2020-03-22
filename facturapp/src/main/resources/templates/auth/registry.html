@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<div id="content">
+			<div th:replace="layout/layout :: alert"></div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-sm-4">
+						<div class="card">
+							<div class="card-header text-center" th:text="#{text.registry.form.title}"></div>
+							<div class="card-body">
+								<form th:action="@{/registry}" th:object="${user}" method="post">
+									<div class="form-group">
+										<input type="text" name="username" id="username" th:field="*{username}"
+											class="form-control" th:placeholder="#{text.registry.form.field.user}" autofocus 
+											th:errorclass="'form-control alert-danger'" /> <small
+											class="form-text text-danger"
+											th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+									</div>
+									<div class="form-group">
+										<input type="password" name="password" id="password" th:field="*{password}"
+											class="form-control" th:placeholder="#{text.registry.form.field.password}"  
+											th:errorclass="'form-control alert-danger'" /> <small
+											class="form-text text-danger"
+											th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+									</div>
+									<div class="form-group">
+										<input type="password" name="password1" id="password1"
+											class="form-control" th:placeholder="#{text.registry.form.field.password.repeat}"  />
+									</div>
+									<div class="form-group">
+										<input type="text" name="name" id="name" th:field="*{name}"
+											class="form-control" th:placeholder="#{text.registry.form.field.name}"  
+											th:errorclass="'form-control alert-danger'" /> <small
+											class="form-text text-danger"
+											th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+									</div>
+									<div class="form-group">
+										<input type="text" name="lastname" id="lastname" th:field="*{lastname}"
+											class="form-control" th:placeholder="#{text.registry.form.field.lastname}"  
+											th:errorclass="'form-control alert-danger'" /> <small
+											class="form-text text-danger"
+											th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></small>
+									</div>
+									<div class="form-group">
+										<input type="email" name="email" id="email" th:field="*{email}"
+											class="form-control" th:placeholder="#{text.registry.form.field.email}"  
+											th:errorclass="'form-control alert-danger'" /> <small
+											class="form-text text-danger"
+											th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+									</div>
+									<div class="form-group">
+										<input type="submit"
+											class="btn btn-large btn-primary btn-block" th:value="#{text.registry.form.button.submit}" />
+									</div>
+								</form>
+								<hr>
+								<a class="btn btn-primary mb-2" th:href="@{/}" th:utext="#{text.registry.button.return}"></a>
+								<span class="ml-3 mr-2" th:utext="#{text.registry.label.language}"></span>
+								<a class="btn btn-secondary" th:href="@{/locale(lang=es_ES)}">ES</a>
+								<a class="btn btn-secondary" th:href="@{/locale(lang=en_US)}">EN</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

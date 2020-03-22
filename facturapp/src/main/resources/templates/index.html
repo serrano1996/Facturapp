@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container text-center">
+            	<h1 class="text-center text-primary"  th:text="#{text.home.header.title}"></h1>
+            	<h3 class="text-center text-primary" sec:authorize="!isAuthenticated()"
+            		th:text="#{text.home.header.title.info}"></h3>
+            	<h4 class="text-center text-primary" sec:authorize="!isAuthenticated()"
+            		th:text="#{text.home.header.title.singup}"></h4>
+            	<a sec:authorize="!isAuthenticated()" th:href="@{/registry}" class="btn btn-warning" 
+            		th:text="#{text.home.header.title.singup.link}"></a>
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
