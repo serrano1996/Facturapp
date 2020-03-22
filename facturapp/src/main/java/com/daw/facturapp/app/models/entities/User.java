@@ -2,9 +2,9 @@ package com.daw.facturapp.app.models.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,17 +12,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
 @Table(name="users")
@@ -34,40 +33,67 @@ public class User implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
-	@NotEmpty
-	@Size(min=4, max=45)
-	@Column(unique=true)
+	@NotBlank					// El campo no puede estar vacio.
+	@Size(min=4, max=45)		// La longitud de caracteres del campo.
+	@Column
 	private String username;
 	
-	@NotEmpty
-	@Column(length=45)
+	@NotBlank					
+	@Size(min=4)
+	@Column
 	private String password;
 	
-	@NotEmpty
-	@Column(length=45)
+	@NotBlank					
+	@Size(min=4, max=45)
+	@Column
 	private String name;
 	
-	@NotEmpty
-	@Column(length=45)
+	@NotBlank					
+	@Size(min=4, max=45)
+	@Column
 	private String lastname;
 	
-	@Email
-	@NotEmpty
-	@Column(unique=true, length=45)
+	@NotBlank					
+	@Email						// Formato incorrecto.
+	@Column
 	private String email;
 	
-	@NotNull
 	@Column(name="created_at")
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-	@JoinColumn(name="user_id")
-	private List<Role> roles;
+	@NotBlank
+	@Transient // Indica que este campo no es persistente, no se guarda en la BD.
+	private String confirmPassword;
+	
+	@ManyToMany(fetch=FetchType.LAZY) // Relación N:M.
+	@JoinTable(
+			name="users_authorities", // Nombre de la tabla N:M.
+			joinColumns=@JoinColumn(name="user_id"), // Nombre del campo que guarda el usuario.
+			inverseJoinColumns=@JoinColumn(name="role_id") // Nombre del campo que guarda el rol.
+	)
+	private Set<Role> roles;
 	
 	@Column(name="active")
 	private Boolean enabled;
+	
+	public User() {
+		super();
+		this.roles = new HashSet<Role>();
+	}
+
+	public User(Long id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Se ejecuta antes de persistir el objeto.
+	 */
+	@PrePersist
+	public void prePersist() {
+		this.createAt = new Date();
+		this.enabled = true;
+	}
 
 	public Long getId() {
 		return id;
@@ -125,11 +151,19 @@ public class User implements Serializable {
 		this.createAt = createAt;
 	}
 
-	public List<Role> getRoles() {
+	public String getConfirmPassword() {
+		return confirmPassword;
+	}
+
+	public void setConfirmPassword(String confirmPassword) {
+		this.confirmPassword = confirmPassword;
+	}
+
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 
@@ -139,6 +173,85 @@ public class User implements Serializable {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((confirmPassword == null) ? 0 : confirmPassword.hashCode());
+		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (confirmPassword == null) {
+			if (other.confirmPassword != null)
+				return false;
+		} else if (!confirmPassword.equals(other.confirmPassword))
+			return false;
+		if (createAt == null) {
+			if (other.createAt != null)
+				return false;
+		} else if (!createAt.equals(other.createAt))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (enabled == null) {
+			if (other.enabled != null)
+				return false;
+		} else if (!enabled.equals(other.enabled))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastname == null) {
+			if (other.lastname != null)
+				return false;
+		} else if (!lastname.equals(other.lastname))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (roles == null) {
+			if (other.roles != null)
+				return false;
+		} else if (!roles.equals(other.roles))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
 	}
 	
 }

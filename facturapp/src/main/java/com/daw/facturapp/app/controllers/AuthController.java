@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -71,23 +72,25 @@ public class AuthController {
 	}
 	
 	@PostMapping("/registry")
-	public String save(@Valid User user, BindingResult result,
-			Model model, Locale locale) {
-		// Si ha algún error en la validación.
+	public String save(@Valid User user, 
+			BindingResult result,
+			Model model, 
+			Locale locale) {
+		// Si hay algún error en la validación de campos.
 		if(result.hasErrors()) {
 			model.addAttribute("title", messageSource.getMessage("text.registry.title", null, locale));
-			System.out.println(userService.findByUsername(user.getUsername()));
+			model.addAttribute("user", user);
 			return "/auth/registry";
 		}
-			
-		PasswordEncoder encoder = passwordEncoder;
 		
-		user.setPassword(encoder.encode(user.getPassword()));
 		try {
 			userService.save(user);
 		} catch (Exception e) {
-			e.printStackTrace();
+			model.addAttribute("error", e.getMessage());
+			System.out.println(e.getMessage());
+			return "/auth/registry";
 		}
+		
 		return "redirect:/";
 	}
 	
