@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container text-center">
+            	<h1 class="text-center text-primary mb-2" th:text="#{text.admin.home.header.title}"></h1>
+            	
+            	<div class="row">
+            		<div class="col-3">
+            			<a th:href="@{'/admin/users'}">
+	            			<div class="card bg-dark text-white">
+							  <img class="card-img-top" th:src="@{'/images/users.png'}" alt="users">
+							  <div class="card-img-overlay">
+							    <h5 class="card-title" th:text="#{text.admin.home.card.title}"></h5>
+							  </div>
+							</div>
+						</a>
+            		</div>
+            	</div>
+            	
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

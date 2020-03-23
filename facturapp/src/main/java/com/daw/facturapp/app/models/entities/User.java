@@ -74,7 +74,7 @@ public class User implements Serializable {
 	)
 	private Set<Role> roles;
 	
-	@Column(name="active")
+	@Column(name="active", columnDefinition="TINYINT(1)")
 	private Boolean enabled;
 	
 	public User() {

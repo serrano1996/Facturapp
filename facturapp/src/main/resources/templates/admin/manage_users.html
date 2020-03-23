@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container text-center">
+            	<h1 class="text-center text-primary mb-2" th:text="#{text.admin.users.header.title}"></h1>
+            	
+            	<table class="table table-bordered table-striped">
+					<thead class="thead-dark">
+						<tr>
+							<th class="text-center">ID</th>
+							<th class="text-center" th:text="#{text.admin.users.table.name}"></th>
+							<th class="text-center" th:text="#{text.admin.users.table.lastname}"></th>
+							<th class="text-center" th:text="#{text.admin.users.table.username}"></th>
+							<th class="text-center" th:text="#{text.admin.users.table.date}"></th>
+							<th class="text-center" th:text="#{text.admin.users.table.status}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="user: ${users}">
+							<td class="text-center" th:classappend="${!user.enabled} ? bg-danger" th:text="${user.id}"></td>
+							<td class="text-center" th:text="${user.name}"></td>
+							<td class="text-center" th:text="${user.lastname}"></td>
+							<td class="text-center" th:text="${user.username}"></td>
+							<td class="text-center" th:text="${user.createAt}"></td>
+							<td class="text-center" th:classappend="${user.enabled} ? bg-success : bg-danger">
+								<span class="text-white" th:if="${user.enabled}" th:text="#{text.admin.users.table.status.active}"></span>
+								<span class="text-white" th:if="${!user.enabled}" th:text="#{text.admin.users.table.status.disactive}"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<nav th:replace="layout/paginator-nav :: paginator"></nav>
+            	
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

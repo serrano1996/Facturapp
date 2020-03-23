@@ -1,5 +1,6 @@
 package com.daw.facturapp.app.models.services;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -7,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.LocaleResolver;
@@ -91,6 +94,16 @@ public class UserServiceImpl implements IUserService {
 			user = userDao.save(user);
 		}
 		return user;
+	}
+
+	@Override
+	public List<User> findAll() {
+		return (List<User>) userDao.findAll();
+	}
+
+	@Override
+	public Page<User> findAll(Pageable pageable) {
+		return (Page<User>) userDao.findAll(pageable);
 	}
 
 }

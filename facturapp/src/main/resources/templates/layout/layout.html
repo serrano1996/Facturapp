@@ -74,6 +74,8 @@
 			<a class="btn btn-secondary mx-1" th:href="@{/locale(lang=en_US)}">EN</a>
 
 			<ul class="list-unstyled components">
+				<li sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"
+					th:utext="#{text.button.admin.dashboard}"></a></li>
 				<li class="active" sec:authorize="isAuthenticated()"><a href="#homeSubmenu"
 					data-toggle="collapse" aria-expanded="false"
 					class="dropdown-toggle" th:utext="#{text.button.home}"></a>
