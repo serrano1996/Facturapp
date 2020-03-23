@@ -4,18 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@EnableGlobalMethodSecurity(securedEnabled=true)
+import com.daw.facturapp.app.models.services.UserDetailsServiceImpl;
+
+
 @Configuration
+@EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	private UserDetailsService userDetailsService;
+	private UserDetailsServiceImpl userDetailsService;
+	
+	// Rutas de recursos.
+	String[] resources = new String[] {
+			"/css/**", "/js/**", "/images/**", "/locale"
+	};
 	
 	/**
 	 * Codificador de contraseñas.
@@ -23,39 +30,41 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder(4);
 	}
 	
-	@Autowired
-	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception {
-		// Autenticación con JPA.
-		builder.userDetailsService(userDetailsService)
-			.passwordEncoder(passwordEncoder());
-	}
-	
+	/**
+	 * Configuarición del control de acceso a las rutas
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			// Rutas accesibles sin autenticación.
-			.antMatchers("/css/**", "/js/**", "/images/**", "/locale").permitAll()
-		// Rutas protegidas.
-		//.antMatchers("/ver/**").hasAnyRole("USER")
-		//.antMatchers("/uploads/**").hasAnyRole("USER")
-		//.antMatchers("/form/**").hasAnyRole("ADMIN")
-		//.antMatchers("/eliminar/**").hasAnyRole("ADMIN")
-		//.antMatchers("/factura/**").hasAnyRole("ADMIN")
-		//.anyRequest().authenticated()
-		// Ruta de logueo.
-			.and()
-				.formLogin()
-				.loginPage("/login") // Página de logueo.
-					.permitAll()
-		// Ruta de deslogueo.
-			.and()
-				.logout().permitAll();
-		//.and()
-		//	.exceptionHandling()
-		//		.accessDeniedPage("/error_403");
+			// Permitimos a todos el acceso a las páginas de recursos.
+			.antMatchers(resources).permitAll()
+			// Cualquiera puede acceder a la página inicio y al registro.
+			.antMatchers("/", "/index", "/registry").permitAll()
+				// Todas las demás páginas, requieren autenticacion.
+				.anyRequest().authenticated()
+				.and()
+			// Formulario de logueo.
+			.formLogin()
+				.loginPage("/login").permitAll() 	// Página de login.
+				.defaultSuccessUrl("/")					// Redirección en caso de login exitoso.
+				.failureUrl("/login?error=true")		// Redirección en caso de login no exitoso
+				.usernameParameter("username")			// Name del input para el usuario.
+				.passwordParameter("password")			// Name del input para la contraseña.
+				.and()
+			.logout().permitAll()
+				.logoutSuccessUrl("/login?logout");
+	}
+	
+	//@Autowired
+	public void configurerGlobal(AuthenticationManagerBuilder authBuilder) 
+			throws Exception {
+		// Autenticación con JPA.
+		// Aquí se especifica el login y el encriptador de la contraseña.
+		authBuilder.userDetailsService(userDetailsService)
+			.passwordEncoder(passwordEncoder());
 	}
 
 }

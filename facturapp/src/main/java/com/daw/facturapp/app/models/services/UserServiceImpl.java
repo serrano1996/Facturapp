@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.LocaleResolver;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements IUserService {
 	
 	@Autowired
 	private HttpServletRequest request;
+	
+	@Autowired
+	private  BCryptPasswordEncoder passwordEncoder;
 	
 	/**
 	 * Valida que el nombre de usuario sea único.
@@ -83,6 +87,7 @@ public class UserServiceImpl implements IUserService {
 				checkEmailAvaliable(user)) {
 			Role role = roleDao.findByName("USER");
 			user.getRoles().add(role);
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user = userDao.save(user);
 		}
 		return user;

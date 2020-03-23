@@ -56,7 +56,7 @@ public class AuthController {
 		// Si cerramos sesión
 		if(logout != null) {
 			model.addAttribute("success", 
-					messageSource.getMessage("text.login.alert.succes.user.logout", null, locale));
+					messageSource.getMessage("text.login.alert.success.user.logout", null, locale));
 		}
 		
 		model.addAttribute("title", messageSource.getMessage("text.login.title", null, locale));
