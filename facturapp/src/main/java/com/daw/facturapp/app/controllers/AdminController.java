@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.facturapp.app.models.entities.User;
@@ -90,7 +91,6 @@ public class AdminController {
 			Locale locale) {
 		List<User> search = userService.findByUsernameLike(username);
 		model.addAttribute("search", search);
-		System.out.println(search);
 		Pageable pageRequest = PageRequest.of(page, 4);
 		Page<User> users = userService.findAll(pageRequest);
 		PageRender<User> pageRender = new PageRender<User>("/admin/users", users);
@@ -98,6 +98,11 @@ public class AdminController {
 		model.addAttribute("users", users);
 		model.addAttribute("page", pageRender);
 		return "admin/manage_users";	
+	}
+	
+	@GetMapping(value = "/load_user/{id}", produces = { "application/json" })
+	public @ResponseBody User loadUser(@PathVariable Long id) {
+		return userService.findById(id);
 	}
 
 }
