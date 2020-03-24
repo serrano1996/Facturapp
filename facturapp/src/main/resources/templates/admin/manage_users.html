@@ -15,6 +15,36 @@
             <div class="container text-center">
             	<h1 class="text-center text-primary mb-2" th:text="#{text.admin.users.header.title}"></h1>
             	
+            	<form class="form-inline mb-3" th:action="@{/admin/search}" method="post">
+					<input class="form-control mr-sm-2" type="text" name="username"
+						th:placeholder="#{text.admin.users.search.form.placeholder}"/>
+					<button class="btn btn-outline-success" type="submit" 
+						th:utext="#{text.admin.users.search.form.button}"></button>
+				</form>
+				
+				<div class="row" th:if="${search != null}">
+					<div class="col-3 mb-2" th:if="${!search.isEmpty()}"
+						th:each="u: ${search}">
+						<div class="card">
+						  <div class="card-body">
+						    <h5 class="card-title text-left" th:text="${u.username}"></h5>
+						    <h6 class="card-subtitle mb-2 text-muted text-left" th:text="${u.name} + ' ' + ${u.lastname}"></h6>
+						    
+						    <form class="d-inline" method="post" th:action="@{/admin/lock/} + ${u.id}" th:if="${u.enabled}">
+								<button type="submit"><i class="fas fa-lock"></i></button>
+							</form>
+							<form class="d-inline" method="post" th:action="@{/admin/unlock/} + ${u.id}" th:if="${!u.enabled}">
+								<button type="submit"><i class="fas fa-lock-open"></i></button>
+							</form>
+							<button type="button"><i class="fas fa-info-circle"></i></button>
+						  </div>
+						</div>
+					</div>
+					<div class="m-3" th:if="${search.isEmpty()}">
+						<h4 th:text="#{text.admin.users.search.not.found}"></h4>
+					</div>
+				</div>
+            	
             	<table class="table table-bordered table-striped">
 					<thead class="thead-dark">
 						<tr>
@@ -38,12 +68,13 @@
 								<span class="text-white" th:if="${!user.enabled}" th:text="#{text.admin.users.table.status.disactive}"></span>
 							</td>
 							<td class="text-center">
-								<form method="post" th:action="@{/admin/lock/} + ${user.id}" th:if="${user.enabled}">
+								<form class="d-inline" method="post" th:action="@{/admin/lock/} + ${user.id}" th:if="${user.enabled}">
 									<button type="submit"><i class="fas fa-lock"></i></button>
 								</form>
-								<form method="post" th:action="@{/admin/unlock/} + ${user.id}" th:if="${!user.enabled}">
+								<form class="d-inline" method="post" th:action="@{/admin/unlock/} + ${user.id}" th:if="${!user.enabled}">
 									<button type="submit"><i class="fas fa-lock-open"></i></button>
 								</form>
+								<button type="button"><i class="fas fa-info-circle"></i></button>
 							</td>
 						</tr>
 					</tbody>

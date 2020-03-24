@@ -129,4 +129,9 @@ public class UserServiceImpl implements IUserService {
 		return user;
 	}
 
+	@Override
+	public List<User> findByUsernameLike(String username) {
+		return userDao.findByUsernameLike(username);
+	}
+
 }

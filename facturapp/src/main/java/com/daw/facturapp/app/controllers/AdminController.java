@@ -1,5 +1,6 @@
 package com.daw.facturapp.app.controllers;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,22 @@ public class AdminController {
 		model.addAttribute("users", users);
 		model.addAttribute("page", pageRender);
 		return "admin/manage_users";
+	}
+	
+	@PostMapping("/search")
+	public String search(Model model, @RequestParam("username") String username,
+			@RequestParam(name="page", defaultValue="0") int page, 
+			Locale locale) {
+		List<User> search = userService.findByUsernameLike(username);
+		model.addAttribute("search", search);
+		System.out.println(search);
+		Pageable pageRequest = PageRequest.of(page, 4);
+		Page<User> users = userService.findAll(pageRequest);
+		PageRender<User> pageRender = new PageRender<User>("/admin/users", users);
+		model.addAttribute("title", messageSource.getMessage("text.admin.users.title", null, locale));
+		model.addAttribute("users", users);
+		model.addAttribute("page", pageRender);
+		return "admin/manage_users";	
 	}
 
 }
