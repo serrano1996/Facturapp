@@ -36,7 +36,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			grants.add(grantedAuthority);
 		}
 		// Usuario que se cargará en la sesión.
-		UserDetails user = (UserDetails) new User(username, appUser.getPassword(), grants);
+		UserDetails user;
+			
+		if(appUser.getEnabled()) {
+			user = (UserDetails) new User(username, appUser.getPassword(), grants);
+		} else {
+			user = new User(
+					username, 
+					appUser.getPassword(), 
+					true, 
+					true, 
+					true, 
+					false, 
+					grants);
+		}
+				
+		
 		return user;
 	}
 

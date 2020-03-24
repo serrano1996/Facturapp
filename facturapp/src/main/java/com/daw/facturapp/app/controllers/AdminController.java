@@ -10,8 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.UserServiceImpl;
@@ -37,6 +40,40 @@ public class AdminController {
 	@GetMapping("/users")
 	public String users(@RequestParam(name="page", defaultValue="0") int page, 
 			Model model, Locale locale) {
+		Pageable pageRequest = PageRequest.of(page, 4);
+		Page<User> users = userService.findAll(pageRequest);
+		PageRender<User> pageRender = new PageRender<User>("/admin/users", users);
+		model.addAttribute("title", messageSource.getMessage("text.admin.users.title", null, locale));
+		model.addAttribute("users", users);
+		model.addAttribute("page", pageRender);
+		return "admin/manage_users";
+	}
+	
+	@PostMapping("/lock/{id}")
+	public String lockUser(@PathVariable(value="id") Long id, Model model,
+			@RequestParam(name="page", defaultValue="0") int page,
+			RedirectAttributes flash, Locale locale) throws Exception {
+		User user = userService.findById(id);
+		user.setEnabled(false);
+		user.setConfirmPassword("0");
+		userService.save(user, 1);
+		Pageable pageRequest = PageRequest.of(page, 4);
+		Page<User> users = userService.findAll(pageRequest);
+		PageRender<User> pageRender = new PageRender<User>("/admin/users", users);
+		model.addAttribute("title", messageSource.getMessage("text.admin.users.title", null, locale));
+		model.addAttribute("users", users);
+		model.addAttribute("page", pageRender);
+		return "admin/manage_users";
+	}
+	
+	@PostMapping("/unlock/{id}")
+	public String unlockUser(@PathVariable(value="id") Long id, Model model,
+			@RequestParam(name="page", defaultValue="0") int page,
+			RedirectAttributes flash, Locale locale) throws Exception {
+		User user = userService.findById(id);
+		user.setEnabled(true);
+		user.setConfirmPassword("0");
+		userService.save(user, 1);
 		Pageable pageRequest = PageRequest.of(page, 4);
 		Page<User> users = userService.findAll(pageRequest);
 		PageRender<User> pageRender = new PageRender<User>("/admin/users", users);

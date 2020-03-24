@@ -50,7 +50,7 @@ public class AuthController {
 		// Si hay errores en el login.
 		if(error != null) {
 			model.addAttribute("error", 
-					messageSource.getMessage("text.login.alert.error.user.password.wrong", null, locale));
+					messageSource.getMessage("text.login.alert.error.user.login.wrong", null, locale));
 		}
 		
 		// Si cerramos sesión
@@ -84,7 +84,7 @@ public class AuthController {
 		}
 		
 		try {
-			userService.save(user);
+			userService.save(user, 0);
 		} catch (Exception e) {
 			model.addAttribute("error", e.getMessage());
 			System.out.println(e.getMessage());

@@ -37,6 +37,14 @@
 								<span class="text-white" th:if="${user.enabled}" th:text="#{text.admin.users.table.status.active}"></span>
 								<span class="text-white" th:if="${!user.enabled}" th:text="#{text.admin.users.table.status.disactive}"></span>
 							</td>
+							<td class="text-center">
+								<form method="post" th:action="@{/admin/lock/} + ${user.id}" th:if="${user.enabled}">
+									<button type="submit"><i class="fas fa-lock"></i></button>
+								</form>
+								<form method="post" th:action="@{/admin/unlock/} + ${user.id}" th:if="${!user.enabled}">
+									<button type="submit"><i class="fas fa-lock-open"></i></button>
+								</form>
+							</td>
 						</tr>
 					</tbody>
 				</table>

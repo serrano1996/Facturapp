@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.LocaleResolver;
@@ -84,14 +85,29 @@ public class UserServiceImpl implements IUserService {
 		return true;
 	}
 
+	/**
+	 * Guarda un usuario en la base de datos.
+	 * Tiene dos modos:
+	 * 	- 0 -> Inserción para nuevos usuarios.
+	 * 	- 1 -> Actualización de datos del usuario.
+	 */
 	@Override
-	public User save(User user) throws Exception {
-		if(checkUsernameAvaliable(user) && checkPasswordMatch(user) && 
-				checkEmailAvaliable(user)) {
-			Role role = roleDao.findByName("USER");
-			user.getRoles().add(role);
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
+	public User save(User user, int mode) throws Exception {
+		switch(mode) {
+		case 0:
+			if(checkUsernameAvaliable(user) && checkPasswordMatch(user) && 
+					checkEmailAvaliable(user)) {
+				Role role = roleDao.findByName("USER");
+				user.getRoles().add(role);
+				user.setPassword(passwordEncoder.encode(user.getPassword()));
+				user = userDao.save(user);
+			}
+			break;
+		case 1:
 			user = userDao.save(user);
+			break;	
+		default:
+			throw new Exception("Unknown options");
 		}
 		return user;
 	}
@@ -104,6 +120,13 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Page<User> findAll(Pageable pageable) {
 		return (Page<User>) userDao.findAll(pageable);
+	}
+
+	@Override
+	public User findById(Long id) {
+		User user = userDao.findById(id).orElseThrow(() -> 
+			new UsernameNotFoundException("Usuario desconocido"));
+		return user;
 	}
 
 }
