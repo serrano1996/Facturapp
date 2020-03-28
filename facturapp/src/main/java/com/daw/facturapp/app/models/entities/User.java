@@ -35,7 +35,7 @@ public class User implements Serializable {
 	
 	@NotBlank					// El campo no puede estar vacio.
 	@Size(min=4, max=45)		// La longitud de caracteres del campo.
-	@Column
+	@Column(unique=true)
 	private String username;
 	
 	@NotBlank					
@@ -55,7 +55,7 @@ public class User implements Serializable {
 	
 	@NotBlank					
 	@Email						// Formato incorrecto.
-	@Column
+	@Column(unique=true)
 	private String email;
 	
 	@Column(name="created_at")
@@ -77,9 +77,18 @@ public class User implements Serializable {
 	@Column(name="active", columnDefinition="TINYINT(1)")
 	private Boolean enabled;
 	
+	@ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+			name="users_enterprises",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="enterprise_id")
+	)
+	private Set<Enterprise> enterprises;
+	
 	public User() {
 		super();
 		this.roles = new HashSet<Role>();
+		this.enterprises = new HashSet<Enterprise>();
 	}
 
 	public User(Long id) {
@@ -175,6 +184,21 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
+	public Set<Enterprise> getEnterprises() {
+		return enterprises;
+	}
+
+	public void setEnterprises(Set<Enterprise> enterprises) {
+		this.enterprises = enterprises;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", name=" + name + ", lastname="
+				+ lastname + ", email=" + email + ", createAt=" + createAt + ", confirmPassword=" + confirmPassword
+				+ ", roles=" + roles + ", enabled=" + enabled + ", enterprises=" + enterprises + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -183,6 +207,7 @@ public class User implements Serializable {
 		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((enabled == null) ? 0 : enabled.hashCode());
+		result = prime * result + ((enterprises == null) ? 0 : enterprises.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -220,6 +245,11 @@ public class User implements Serializable {
 			if (other.enabled != null)
 				return false;
 		} else if (!enabled.equals(other.enabled))
+			return false;
+		if (enterprises == null) {
+			if (other.enterprises != null)
+				return false;
+		} else if (!enterprises.equals(other.enterprises))
 			return false;
 		if (id == null) {
 			if (other.id != null)

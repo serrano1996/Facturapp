@@ -91,7 +91,9 @@ public class AuthController {
 			return "/auth/registry";
 		}
 		
-		return "redirect:/";
+		model.addAttribute("success", messageSource.getMessage("text.login.alert.success.user.record", null, locale));
+		
+		return "index";
 	}
 	
 }

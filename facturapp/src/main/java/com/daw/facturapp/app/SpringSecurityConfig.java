@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.daw.facturapp.app.models.services.UserDetailsServiceImpl;
@@ -43,7 +44,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(resources).permitAll()
 			// Cualquiera puede acceder a la página inicio y al registro.
 			.antMatchers("/", "/index", "/registry").permitAll()
-			.antMatchers("/admin*").access("hasRole('ADMIN')")
+			.antMatchers("/admin", "/admin/*").access("hasRole('ADMIN')")
 				// Todas las demás páginas, requieren autenticacion.
 				.anyRequest().authenticated()
 				.and()

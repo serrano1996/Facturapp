@@ -3,6 +3,7 @@ INSERT INTO `facturapp`.`users` (username, password, name, lastname, email, crea
 
 INSERT INTO `facturapp`.`authorities` (description, name) VALUES ('ROLE_ADMIN', 'ADMIN');
 INSERT INTO `facturapp`.`authorities` (description, name) VALUES ('ROLE_USER' ,'USER');
+INSERT INTO `facturapp`.`authorities` (description, name) VALUES ('ROLE_OPERATOR' ,'OPERATOR');
 
 INSERT INTO `facturapp`.`users_authorities` (user_id, role_id) VALUES (1, 1);
 INSERT INTO `facturapp`.`users_authorities` (user_id, role_id) VALUES (1, 2);

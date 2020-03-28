@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+		<div id="content">
+
+			<div th:replace="layout/layout :: alert"></div>
+
+			<nav th:replace="layout/layout :: navi"></nav>
+
+			<div class="container">
+				<h1 class="text-center text-primary mb-2"
+					th:text="#{text.user.add.enterprise.form.title}"></h1>
+
+				<form method="post" th:action="@{/user/add_business}" 
+					th:object="${enterprise}" enctype="multipart/form-data">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="cif" th:utext="#{text.user.add.enterprise.form.field.nif}"></label> <input type="text"
+								class="form-control" id="cif" name="cif" th:field="*{cif}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('cif')}" th:errors="*{cif}"></small>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="name" th:utext="#{text.user.add.enterprise.form.field.name}"></label> <input
+								type="text" class="form-control" id="name"
+								name="name" th:field="*{name}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="province" th:utext="#{text.user.add.enterprise.form.field.province}"></label> <input type="text"
+								class="form-control" id="province" name="province" th:field="*{province}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('province')}" th:errors="*{province}"></small>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="town" th:utext="#{text.user.add.enterprise.form.field.town}"></label> <input
+								type="text" class="form-control" id="town"
+								name="town" th:field="*{town}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></small>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="country" th:utext="#{text.user.add.enterprise.form.field.country}"></label> <input
+								type="text" class="form-control" id="country"
+								name="country" th:field="*{country}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></small>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-4">
+							<label for="address" th:utext="#{text.user.add.enterprise.form.field.address}"></label> <input
+								type="text" class="form-control" id="address"
+								name="address" th:field="*{address}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="email_contact" th:utext="#{text.user.add.enterprise.form.field.email}"></label> <input type="text"
+								class="form-control" id="email_contact" name="email_contact" th:field="*{email_contact}">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('email_contact')}" th:errors="*{email_contact}"></small>
+						</div>
+						<div class="form-group col-md-4">
+							<label for="phone_contact" th:utext="#{text.user.add.enterprise.form.field.phone}"></label> <input
+								type="text" class="form-control" id="phone_contact" th:field="*{phone_contact}"
+								name="phone_contact">
+								<small class="form-text text-danger"
+									th:if="${#fields.hasErrors('phone_contact')}" th:errors="*{phone_contact}"></small>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+								<label for="logo" th:utext="#{text.user.add.enterprise.form.field.logo}"></label> 
+								<input type="file" class="form-control" id="logo" name="image">
+									<small class="form-text text-danger"
+										th:if="${#fields.hasErrors('logo')}" th:errors="*{logo}"></small>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-primary"
+						th:text="#{text.user.add.enterprise.form.button.submit}"></button>
+					<a class="btn btn-secondary" th:href="@{/}"
+						th:utext="#{text.user.add.enterprise.form.button.return}"></a>
+				</form>
+			</div>
+
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

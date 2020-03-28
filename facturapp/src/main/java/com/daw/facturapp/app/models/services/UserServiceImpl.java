@@ -134,4 +134,11 @@ public class UserServiceImpl implements IUserService {
 		return userDao.findByUsernameLike(username);
 	}
 
+	@Override
+	public User findByUsername(String username) {
+		User user = userDao.findByUsername(username).orElseThrow(() -> 
+			new UsernameNotFoundException("Usuario desconocido"));
+		return user;
+	}
+
 }

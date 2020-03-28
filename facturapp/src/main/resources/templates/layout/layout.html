@@ -25,18 +25,18 @@
 			<a class="btn btn-secondary mx-1" th:href="@{/locale(lang=en_US)}">EN</a>
 
 			<ul class="list-unstyled components">
+				<li sec:authorize="isAuthenticated()"><a th:href="@{/}" th:utext="#{text.button.home}"></a></li>
 				<li sec:authorize="isAuthenticated() && hasRole('ROLE_ADMIN')"><a th:href="@{/admin}"
 					th:utext="#{text.button.admin.dashboard}"></a></li>
-				<li class="active" sec:authorize="isAuthenticated()"><a href="#homeSubmenu"
-					data-toggle="collapse" aria-expanded="false"
-					class="dropdown-toggle" th:utext="#{text.button.home}"></a>
-					<ul class="collapse list-unstyled" id="homeSubmenu">
-						<li><a href="#">Home 1</a></li>
-						<li><a href="#">Home 2</a></li>
-						<li><a href="#">Home 3</a></li>
+				
+				<li class="active" sec:authorize="isAuthenticated()"
+					th:if="${!user.enterprises.isEmpty()}" th:each="enterprise: ${user.enterprises}">
+				<a th:href="'#homeSubmenu_' + ${enterprise.id}"data-toggle="collapse" aria-expanded="false"
+					class="dropdown-toggle" th:text="${enterprise.name}"></a>
+					<ul class="collapse list-unstyled" th:id="'homeSubmenu_' + ${enterprise.id}">
+						<li><a href="#" th:utext="#{text.button.clients}"></a></li>
+						<li><a href="#" th:utext="#{text.button.products}"></a></li>
 					</ul></li>
-				<li sec:authorize="isAuthenticated()"><a href="#" th:utext="#{text.button.clients}"></a></li>
-				<li sec:authorize="isAuthenticated()"><a href="#" th:utext="#{text.button.products}"></a></li>
 			</ul>
 		</nav>
 	</header>

@@ -18,6 +18,8 @@ public interface IUserService {
 	
 	public User save(User user, int mode) throws Exception;
 	
+	public User findByUsername(String username);
+	
 	public List<User> findByUsernameLike(String username);
 	
 }
