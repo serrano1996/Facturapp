@@ -29,9 +29,10 @@
             	<a class="btn btn-outline-primary my-3" th:href="@{'/user/add_business'}" sec:authorize="hasRole('ROLE_USER')"
             		th:utext="#{text.user.home.button}"></a>
             	<div class="row" sec:authorize="hasRole('ROLE_USER')">
-	            	<div class="col-3" th:if="${!user.enterprises.isEmpty()}" th:each="enterprise: ${user.enterprises}">
+	            	<div class="col-sm-12 col-md-6 col-lg-3 mb-2" th:if="${!user.enterprises.isEmpty()}" th:each="enterprise: ${user.enterprises}">
 		            	<div class="card mr-1">
-							<img class="card-img-top" th:src="@{/img/view/} + ${enterprise.id}" alt="Card image cap">
+							<a th:href="@{/enterprise/} + ${enterprise.id}"><img class="card-img-top" 
+								th:src="@{/img/view/} + ${enterprise.id}" th:alt="${enterprise.name}" /></a>
 							<div class="card-body">
 							  	<h5 class="" th:text="${enterprise.name}"></h5>
 							</div>

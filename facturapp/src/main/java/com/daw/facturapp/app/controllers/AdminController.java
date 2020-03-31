@@ -59,9 +59,7 @@ public class AdminController {
 	@PostMapping("/lock/{id}")
 	public String lockUser(@PathVariable(value="id") Long id, Model model,
 			@RequestParam(name="page", defaultValue="0") int page,
-			RedirectAttributes flash, Locale locale, Authentication auth) throws Exception {
-		User u = (User) userService.findByUsername(auth.getName());
-		model.addAttribute("user", u);
+			RedirectAttributes flash, Locale locale) throws Exception {
 		User user = userService.findById(id);
 		user.setEnabled(false);
 		user.setConfirmPassword("0");
@@ -78,9 +76,7 @@ public class AdminController {
 	@PostMapping("/unlock/{id}")
 	public String unlockUser(@PathVariable(value="id") Long id, Model model,
 			@RequestParam(name="page", defaultValue="0") int page,
-			RedirectAttributes flash, Locale locale, Authentication auth) throws Exception {
-		User u = (User) userService.findByUsername(auth.getName());
-		model.addAttribute("user", u);
+			RedirectAttributes flash, Locale locale) throws Exception {
 		User user = userService.findById(id);
 		user.setEnabled(true);
 		user.setConfirmPassword("0");
@@ -98,8 +94,6 @@ public class AdminController {
 	public String search(Model model, @RequestParam("username") String username,
 			@RequestParam(name="page", defaultValue="0") int page, 
 			Locale locale, Authentication auth) {
-		User user = (User) userService.findByUsername(auth.getName());
-		model.addAttribute("user", user);
 		List<User> search = userService.findByUsernameLike(username);
 		model.addAttribute("search", search);
 		Pageable pageRequest = PageRequest.of(page, 4);

@@ -23,36 +23,36 @@ public class Enterprise implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-							
+	@NotBlank						
 	@Column(unique=true)
 	private String cif;
 	
-								
+	@NotBlank								
 	@Column(unique=true)
 	private String name;
 	
-								
+	@NotBlank								
 	@Column
 	private String address;
 	
-								
+	@NotBlank								
 	@Column
 	private String province;
 	
-							
+	@NotBlank							
 	@Column
 	private String town;
 	
-								
+	@NotBlank								
 	@Column
 	private String country;
 	
-	
+	@NotBlank	
 	@Email
 	@Column
 	private String email_contact;
 	
-								
+	@NotBlank								
 	@Column
 	private String phone_contact;
 	

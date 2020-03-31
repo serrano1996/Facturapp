@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-center text-primary" th:text="${enterprise.name}"></h1>
+            	
+            	<div class="row justify-content-center">
+	            	<div class="card col-sm-12 col-lg-8">        	
+		            	<div class="row justify-content-center pt-2">
+		            		<div class="col-sm-12 col-md-3 col-lg-3">
+		            			<img class="img-fluid" 
+									th:src="@{/img/view/} + ${enterprise.id}" th:alt="${enterprise.name}">
+		            		</div>
+		            		<div class="col">
+		            			<div class="row">
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.nif}"></strong>
+		            					<p th:text="${enterprise.cif}"></p>
+		            				</div>
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.name}"></strong>
+		            					<p th:text="${enterprise.name}"></p>
+		            				</div>
+		            			</div>
+		            			<div class="row">
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.address}"></strong>
+		            					<p th:text="${enterprise.address} + ', ' + ${enterprise.town} + ', ' + ${enterprise.province}"></p>
+		            				</div>
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.country}"></strong>
+		            					<p th:text="${enterprise.country}"></p>
+		            				</div>
+		            			</div>
+		            			<div class="row">
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.email}"></strong>
+		            					<p th:text="${enterprise.email_contact}"></p>
+		            				</div>
+		            				<div class="col-sm-6 col-md-3 col-lg-6">
+		            					<strong th:utext="#{text.enterprise.home.info.phone}"></strong>
+		            					<p th:text="${enterprise.phone_contact}"></p>
+		            				</div>
+		            			</div>
+		            		</div>
+		            	</div>
+	            	</div> 
+	            	<div class="col-2">
+	            		<a href="#" class="btn btn-warning"><i class="fas fa-cogs"></i></a>
+	            	</div>
+            	</div> 
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
