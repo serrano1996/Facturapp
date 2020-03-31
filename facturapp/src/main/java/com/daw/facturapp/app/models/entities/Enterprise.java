@@ -2,13 +2,19 @@ package com.daw.facturapp.app.models.entities;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -59,6 +65,27 @@ public class Enterprise implements Serializable {
 	@Lob
 	@Column
 	private byte[] logo;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name="enterprise_id")
+	private Set<Client> clients;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "enterprise_id")
+	private Set<Product> products;
+	
+	public Enterprise() {
+		this.clients = new HashSet<Client>();
+		this.products = new HashSet<Product>();
+	}
+	
+	public void addClient(Client client) {
+		this.clients.add(client);
+	}
+	
+	public void addProduct(Product product) {
+		this.products.add(product);
+	}
 
 	public Long getId() {
 		return id;
@@ -140,11 +167,28 @@ public class Enterprise implements Serializable {
 		this.logo = logo;
 	}
 
+	public Set<Client> getClients() {
+		return clients;
+	}
+
+	public void setClients(Set<Client> clients) {
+		this.clients = clients;
+	}
+
+	public Set<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(Set<Product> products) {
+		this.products = products;
+	}
+
 	@Override
 	public String toString() {
 		return "Enterprise [id=" + id + ", cif=" + cif + ", name=" + name + ", address=" + address + ", province="
 				+ province + ", town=" + town + ", country=" + country + ", email_contact=" + email_contact
-				+ ", phone_contact=" + phone_contact + ", logo=" + Arrays.toString(logo) + "]";
+				+ ", phone_contact=" + phone_contact + ", logo=" + Arrays.toString(logo) + ", clients=" + clients
+				+ ", products=" + products + "]";
 	}
 
 	@Override
@@ -153,12 +197,14 @@ public class Enterprise implements Serializable {
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((cif == null) ? 0 : cif.hashCode());
+		result = prime * result + ((clients == null) ? 0 : clients.hashCode());
 		result = prime * result + ((country == null) ? 0 : country.hashCode());
 		result = prime * result + ((email_contact == null) ? 0 : email_contact.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + Arrays.hashCode(logo);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((phone_contact == null) ? 0 : phone_contact.hashCode());
+		result = prime * result + ((products == null) ? 0 : products.hashCode());
 		result = prime * result + ((province == null) ? 0 : province.hashCode());
 		result = prime * result + ((town == null) ? 0 : town.hashCode());
 		return result;
@@ -182,6 +228,11 @@ public class Enterprise implements Serializable {
 			if (other.cif != null)
 				return false;
 		} else if (!cif.equals(other.cif))
+			return false;
+		if (clients == null) {
+			if (other.clients != null)
+				return false;
+		} else if (!clients.equals(other.clients))
 			return false;
 		if (country == null) {
 			if (other.country != null)
@@ -209,6 +260,11 @@ public class Enterprise implements Serializable {
 			if (other.phone_contact != null)
 				return false;
 		} else if (!phone_contact.equals(other.phone_contact))
+			return false;
+		if (products == null) {
+			if (other.products != null)
+				return false;
+		} else if (!products.equals(other.products))
 			return false;
 		if (province == null) {
 			if (other.province != null)

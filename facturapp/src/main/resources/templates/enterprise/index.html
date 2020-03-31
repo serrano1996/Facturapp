@@ -60,6 +60,39 @@
 	            		<a href="#" class="btn btn-warning"><i class="fas fa-cogs"></i></a>
 	            	</div>
             	</div> 
+            
+            	<div class="row justify-content-center mt-2">
+            		<div class="col-3">
+            			<a th:href="@{'/admin/users'}">
+	            			<div class="card bg-dark text-white">
+							  <img class="card-img-top" th:src="@{'/images/operators.png'}" alt="users">
+							  <div class="card-img-overlay">
+							    <h5 class="card-title" th:text="#{text.enterprise.home.operators}"></h5>
+							  </div>
+							</div>
+						</a>
+            		</div>
+            		<div class="col-3">
+            			<a th:href="@{'/admin/users'}">
+	            			<div class="card bg-dark text-white">
+							  <img class="card-img-top" th:src="@{'/images/clients.png'}" alt="users">
+							  <div class="card-img-overlay">
+							    <h5 class="card-title" th:text="#{text.enterprise.home.clients}"></h5>
+							  </div>
+							</div>
+						</a>
+            		</div>
+            		<div class="col-3">
+            			<a th:href="@{'/admin/users'}">
+	            			<div class="card bg-dark text-white">
+							  <img class="card-img-top" th:src="@{'/images/products.png'}" alt="users">
+							  <div class="card-img-overlay">
+							    <h5 class="card-title" th:text="#{text.enterprise.home.products}"></h5>
+							  </div>
+							</div>
+						</a>
+            		</div>
+            	</div>
             </div>
             
         </div>
