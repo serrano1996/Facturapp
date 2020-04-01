@@ -3,8 +3,10 @@ package com.daw.facturapp.app.models.entities;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,6 +25,8 @@ import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name="users")
@@ -49,7 +54,7 @@ public class User implements Serializable {
 	private String name;
 	
 	@NotBlank					
-	@Size(min=4, max=45)
+	@Size(min=3, max=45)
 	@Column
 	private String lastname;
 	
@@ -77,12 +82,8 @@ public class User implements Serializable {
 	@Column(name="active", columnDefinition="TINYINT(1)")
 	private Boolean enabled;
 	
-	@ManyToMany(fetch=FetchType.LAZY)
-	@JoinTable(
-			name="users_enterprises",
-			joinColumns=@JoinColumn(name="user_id"),
-			inverseJoinColumns=@JoinColumn(name="enterprise_id")
-	)
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@JoinColumn(name="user_id")
 	private Set<Enterprise> enterprises;
 	
 	public User() {
@@ -103,6 +104,15 @@ public class User implements Serializable {
 		this.createAt = new Date();
 		this.enabled = true;
 	}
+	
+	public void removeEnterprise(String name) {
+        Iterator<Enterprise> it = this.enterprises.iterator();
+        while(it.hasNext()) {
+        	if(it.next().getName().equals(name)) {
+        		it.remove();
+        	}
+        }
+    } 
 
 	public Long getId() {
 		return id;

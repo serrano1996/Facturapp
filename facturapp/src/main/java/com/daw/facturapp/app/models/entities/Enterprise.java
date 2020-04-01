@@ -66,11 +66,11 @@ public class Enterprise implements Serializable {
 	@Column
 	private byte[] logo;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name="enterprise_id")
 	private Set<Client> clients;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "enterprise_id")
 	private Set<Product> products;
 	

@@ -7,5 +7,7 @@ public interface IEnterpriseService {
 	public Enterprise findById(Long id) throws Exception;
 	
 	public Enterprise save(Enterprise enterprise);
+	
+	public void delete(Long id);
 
 }

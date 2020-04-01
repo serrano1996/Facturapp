@@ -36,7 +36,8 @@
 							<form class="d-inline" method="post" th:action="@{/admin/unlock/} + ${u.id}" th:if="${!u.enabled}">
 								<button class="btn btn-danger" type="submit"><i class="fas fa-lock-open"></i></button>
 							</form>
-							<button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-info-circle"></i></button>
+							<button class="btn btn-primary" type="button" data-toggle="modal" th:value="${user.id}"
+								 data-target="#exampleModalCenter"><i class="fas fa-info-circle"></i></button>
 						  </div>
 						</div>
 					</div>

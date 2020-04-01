@@ -87,8 +87,15 @@ public class EnterpriseController {
 	}
 	
 	@PostMapping("/delete/{id}")
-	public String delete() {
-		return "";
+	public String delete(@PathVariable Long id, Model model, 
+		Locale locale, Authentication auth, RedirectAttributes flash) throws Exception {
+		User user = (User) userService.findByUsername(auth.getName());
+		Enterprise enterprise = enterpriseService.findById(id);
+		user.removeEnterprise(enterprise.getName());
+		enterpriseService.delete(id);
+		model.addAttribute("user", user);
+		flash.addFlashAttribute("success", messageSource.getMessage("text.enterprise.alert.success.delete", null, locale));
+		return "redirect:/";
 	}
 
 }

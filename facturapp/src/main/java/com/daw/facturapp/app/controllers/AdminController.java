@@ -8,7 +8,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +52,7 @@ public class AdminController {
 		model.addAttribute("title", messageSource.getMessage("text.admin.users.title", null, locale));
 		model.addAttribute("users", users);
 		model.addAttribute("page", pageRender);
+		model.addAttribute("user", user);
 		return "admin/manage_users";
 	}
 	
@@ -94,6 +94,7 @@ public class AdminController {
 	public String search(Model model, @RequestParam("username") String username,
 			@RequestParam(name="page", defaultValue="0") int page, 
 			Locale locale, Authentication auth) {
+		User user = (User) userService.findByUsername(auth.getName());
 		List<User> search = userService.findByUsernameLike(username);
 		model.addAttribute("search", search);
 		Pageable pageRequest = PageRequest.of(page, 4);
@@ -102,6 +103,7 @@ public class AdminController {
 		model.addAttribute("title", messageSource.getMessage("text.admin.users.title", null, locale));
 		model.addAttribute("users", users);
 		model.addAttribute("page", pageRender);
+		model.addAttribute("user", user);
 		return "admin/manage_users";	
 	}
 	

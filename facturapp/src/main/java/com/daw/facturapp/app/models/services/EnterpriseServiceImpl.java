@@ -24,4 +24,9 @@ public class EnterpriseServiceImpl implements IEnterpriseService {
 		return enterprise;
 	}
 
+	@Override
+	public void delete(Long id) {
+		enterpriseDao.deleteById(id);	
+	}
+
 }

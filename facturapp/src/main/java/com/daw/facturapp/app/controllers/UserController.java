@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.User;
@@ -45,10 +46,11 @@ public class UserController {
 	}
 	
 	@PostMapping("/add_business")
-	public String addBusiness(Model model, Locale locale,
-			@Valid Enterprise enterprise, BindingResult result,
+	public String addBusiness(@Valid Enterprise enterprise, BindingResult result, 
 			@RequestParam("image") MultipartFile image,
-			Authentication auth) throws Exception {
+			Model model, Locale locale,
+			Authentication auth,
+			RedirectAttributes flash) throws Exception {
 		User user = (User) userService.findByUsername(auth.getName());
 		
 		if(result.hasErrors()) {
@@ -66,12 +68,13 @@ public class UserController {
 			}
 		}
 		
+		flash.addFlashAttribute("success", messageSource.getMessage("text.enterprise.alert.success.create", null, locale));
 		enterpriseService.save(enterprise);
 		user.getEnterprises().add(enterprise);
 		userService.save(user, 1);
 		model.addAttribute("user", user);
 		
-		return "index";
+		return "redirect:/";
 	}
 
 }

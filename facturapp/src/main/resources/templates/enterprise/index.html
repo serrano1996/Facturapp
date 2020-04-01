@@ -66,16 +66,6 @@
             		<div class="col-3">
             			<a th:href="@{'/admin/users'}">
 	            			<div class="card bg-dark text-white">
-							  <img class="card-img-top" th:src="@{'/images/operators.png'}" alt="users">
-							  <div class="card-img-overlay">
-							    <h5 class="card-title" th:text="#{text.enterprise.home.operators}"></h5>
-							  </div>
-							</div>
-						</a>
-            		</div>
-            		<div class="col-3">
-            			<a th:href="@{'/admin/users'}">
-	            			<div class="card bg-dark text-white">
 							  <img class="card-img-top" th:src="@{'/images/clients.png'}" alt="users">
 							  <div class="card-img-overlay">
 							    <h5 class="card-title" th:text="#{text.enterprise.home.clients}"></h5>
@@ -112,6 +102,7 @@
 		      </div>
 		      <div class="modal-body">
 		      	<h4 class="text-primary" th:text="#{text.enterprise.home.modal.setting.edit.title}"></h4>
+		        <hr>
 		        <form th:action="@{/enterprise/save}" method="post"
 		        	th:object="${enterprise}" enctype="multipart/form-data">
 		        	<div class="form-row">
@@ -186,9 +177,16 @@
 							th:text="#{text.user.add.enterprise.form.button.save}"></button>
 					</div>
 		        </form>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-primary">Save changes</button>
+		        <hr>
+		        <h4 class="text-danger" th:utext="#{text.enterprise.home.modal.setting.danger.title}"></h4>
+		        <hr>
+		        <form th:action="@{/enterprise/delete/} + ${enterprise.id}" method="post">
+		        	<div class="text-right">
+		        		<button class="btn btn-danger" type="submit"
+		        			onclick="return confirm('Are you sure you want to delete?');"
+		        			th:utext="#{text.enterprise.home.modal.setting.button.delete}"></button>
+		        	</div>
+		        </form>
 		      </div>
 		    </div>
 		  </div>
