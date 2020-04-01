@@ -54,7 +54,6 @@ public class UserController {
 		if(result.hasErrors()) {
 			model.addAttribute("title", messageSource.getMessage("text.user.add.enterprise.form.title", null, locale));
 			model.addAttribute("enterprise", enterprise);
-			model.addAttribute("error", "Error");
 			return "user/add_business";
 		}
 		

@@ -30,11 +30,11 @@ public class Enterprise implements Serializable {
 	private Long id;
 	
 	@NotBlank						
-	@Column(unique=true)
+	@Column
 	private String cif;
 	
 	@NotBlank								
-	@Column(unique=true)
+	@Column
 	private String name;
 	
 	@NotBlank								

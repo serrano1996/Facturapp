@@ -20,7 +20,7 @@ public class EnterpriseServiceImpl implements IEnterpriseService {
 	@Override
 	public Enterprise findById(Long id) throws Exception {
 		Enterprise enterprise = enterpriseDao.findById(id).orElseThrow(() -> 
-				new Exception("ff"));
+				new Exception("Enterprise not found"));
 		return enterprise;
 	}
 
