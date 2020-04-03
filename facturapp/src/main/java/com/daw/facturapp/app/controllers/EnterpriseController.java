@@ -114,15 +114,13 @@ public class EnterpriseController {
 		User user = (User) userService.findByUsername(auth.getName());
 		Enterprise enterprise = enterpriseService.findById(id);
 		
+		// Paginación de clientes.
 		Pageable pageRequest = PageRequest.of(page, 4);
 		Page<Client> clients = 
 				clientService.findByEnterprise(enterprise.getId(), pageRequest);
 		PageRender<Client> pageRender = 
 				new PageRender<Client>("/enterprise/" + enterprise.getId() + "/clients", clients);
-		
-		for(Client c: clients) {
-			System.out.println(c);
-		}
+
 		
 		model.addAttribute("clients", clients);
 		model.addAttribute("page", pageRender);
@@ -159,9 +157,10 @@ public class EnterpriseController {
 		enterprise.addClient(client);
 		clientService.save(client);
 		flash.addFlashAttribute("enterprise", enterprise);
-		flash.addFlashAttribute("success", "Cliente añadido con éxito");
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.client.alert.success.create", null, locale));
 		
-		return "redirect:/enterprise/" + enterprise.getId() + "/clients";
+		return "redirect:/enterprise/" + enterprise.getId();
 	}
 	
 	@GetMapping("/{id}/products")

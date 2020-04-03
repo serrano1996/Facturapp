@@ -16,11 +16,13 @@
             	<h1 class="text-primary" th:text="${enterprise.name}"></h1>
             	
             	<div class="row">
-	            	<div class="card col-sm-12 col-lg-8">        	
-		            	<div class="row justify-content-center pt-2">
+	            	<div class="card col-sm-12 col-lg-8 mb-2">        	
+		            	<div class="row justify-content-center">
 		            		<div class="col-sm-12 col-md-3 col-lg-3">
 		            			<img class="img-fluid" 
 									th:src="@{/img/view/} + ${enterprise.id}" th:alt="${enterprise.name}">
+								<strong th:utext="#{text.enterprise.home.info.costumer}"></strong>
+								<p th:text="${enterprise.clients.size()}"></p>
 		            		</div>
 		            		<div class="col">
 		            			<div class="row">
@@ -63,7 +65,7 @@
             	</div> 
             
             	<div class="row mt-2">
-            		<div class="col-3">
+            		<div class="col-sm-13 col-md-3 col-lg-3 mb-2">
             			<a th:href="@{'/enterprise/'} + ${enterprise.id} + '/clients'">
 	            			<div class="card bg-dark text-white">
 							  <img class="card-img-top" th:src="@{'/images/clients.png'}" alt="users">
@@ -73,7 +75,7 @@
 							</div>
 						</a>
             		</div>
-            		<div class="col-3">
+            		<div class="col-sm-13 col-md-3 col-lg-3">
             			<a th:href="@{'/enterprise/'} + ${enterprise.id} + '/products'">
 	            			<div class="card bg-dark text-white">
 							  <img class="card-img-top" th:src="@{'/images/products.png'}" alt="users">

@@ -13,16 +13,17 @@
         	<nav th:replace="layout/layout :: navi"></nav>
             
             <div class="container">
-            	<h1 class="text-center text-primary">Clientes</h1>
+            	<h1 class="text-center text-primary" th:text="#{text.client.home.title}"></h1>
             	
-            	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_clients'">Añadir cliente</a>
+            	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_clients'"
+            		th:utext="#{text.client.home.add.button}"></a>
             	
             	<table th:if="${!enterprise.clients.isEmpty()}" class="table table-bordered table-striped">
 					<thead class="thead-dark">
 						<tr>
-							<th class="text-center">NIF/CIF</th>
-							<th class="text-center">Denominación</th>
-							<th class="text-center">Fecha de alta</th>
+							<th class="text-center" th:text="#{text.client.home.table.nif}"></th>
+							<th class="text-center" th:text="#{text.client.home.table.name}"></th>
+							<th class="text-center" th:text="#{text.client.home.table.date}"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -30,11 +31,19 @@
 							<td class="text-center" th:text="${client.nif}"></td>
 							<td class="text-center" th:text="${client.name}"></td>
 							<td class="text-center" th:text="${client.createAt}"></td>
+							<td class="text-center">
+								<button class="btn btn-primary"><i class="fas fa-info-circle"></i></button>
+								<button class="btn btn-primary"><i class="fas fa-file-invoice"></i></button>
+								<button class="btn btn-warning"><i class="fas fa-user-edit"></i></button>
+								<button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+							</td>
 						</tr>
 					</tbody>
 				</table>
-				<nav th:if="${!enterprise.clients.isEmpty()}" th:replace="layout/paginator-nav :: paginator"></nav>
-
+				<div th:if="${!enterprise.clients.isEmpty()}">
+					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+				</div>
+				
 				<h4 th:if="${enterprise.clients.isEmpty()}">Ningún cliente registrado aún</h4>
             	
             </div>
