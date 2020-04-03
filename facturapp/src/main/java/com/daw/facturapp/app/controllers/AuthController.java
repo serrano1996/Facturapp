@@ -75,7 +75,8 @@ public class AuthController {
 	public String save(@Valid User user, 
 			BindingResult result,
 			Model model, 
-			Locale locale) {
+			Locale locale,
+			RedirectAttributes flash) {
 		// Si hay algún error en la validación de campos.
 		if(result.hasErrors()) {
 			model.addAttribute("title", messageSource.getMessage("text.registry.title", null, locale));
@@ -91,9 +92,9 @@ public class AuthController {
 			return "/auth/registry";
 		}
 		
-		model.addAttribute("success", messageSource.getMessage("text.login.alert.success.user.record", null, locale));
+		flash.addFlashAttribute("success", messageSource.getMessage("text.login.alert.success.user.record", null, locale));
 		
-		return "index";
+		return "redirect:/";
 	}
 	
 }

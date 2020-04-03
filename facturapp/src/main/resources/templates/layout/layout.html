@@ -50,8 +50,9 @@
 				<a th:href="'#homeSubmenu_' + ${enterprise.id}"data-toggle="collapse" aria-expanded="false"
 					class="dropdown-toggle" th:text="${enterprise.name}"></a>
 					<ul class="collapse list-unstyled" th:id="'homeSubmenu_' + ${enterprise.id}">
-						<li><a href="#" th:utext="#{text.button.clients}"></a></li>
-						<li><a href="#" th:utext="#{text.button.products}"></a></li>
+						<li><a th:href="@{/enterprise/} + ${enterprise.id}" th:utext="#{text.button.home}"></a></li>
+						<li><a th:href="@{'/enterprise/'} + ${enterprise.id} + '/clients'" th:utext="#{text.button.clients}"></a></li>
+						<li><a th:href="@{'/enterprise/'} + ${enterprise.id} + '/products'" th:utext="#{text.button.products}"></a></li>
 					</ul></li>
 			</ul>
 		</nav>

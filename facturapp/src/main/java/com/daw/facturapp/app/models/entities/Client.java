@@ -1,15 +1,17 @@
 package com.daw.facturapp.app.models.entities;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -28,14 +30,16 @@ public class Client implements Serializable {
 	
 	@NotBlank						
 	@Column
-	private String name;
-							
-	@Column(nullable=true)
-	private String lastname;
+	private String name;						
 	
-	@Lob
-	@Column(nullable=true)
-	private byte[] image;
+	@Column(name="created_at")
+	@Temporal(TemporalType.DATE)
+	private Date createAt;
+	
+	@PrePersist
+	public void prePersist() {
+		this.createAt = new Date();
+	}
 
 	public Long getId() {
 		return id;
@@ -61,35 +65,26 @@ public class Client implements Serializable {
 		this.name = name;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public Date getCreateAt() {
+		return createAt;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setCreateAt(Date createAt) {
+		this.createAt = createAt;
 	}
-
-	public byte[] getImage() {
-		return image;
-	}
-
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
-
+	
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", lastname=" + lastname + ", image="
-				+ Arrays.toString(image) + "]";
+		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt="
+				+ createAt + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + Arrays.hashCode(image);
-		result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((nif == null) ? 0 : nif.hashCode());
 		return result;
@@ -104,17 +99,15 @@ public class Client implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Client other = (Client) obj;
+		if (createAt == null) {
+			if (other.createAt != null)
+				return false;
+		} else if (!createAt.equals(other.createAt))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
-			return false;
-		if (!Arrays.equals(image, other.image))
-			return false;
-		if (lastname == null) {
-			if (other.lastname != null)
-				return false;
-		} else if (!lastname.equals(other.lastname))
 			return false;
 		if (name == null) {
 			if (other.name != null)

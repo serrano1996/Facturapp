@@ -7,6 +7,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +24,13 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.daw.facturapp.app.models.entities.Client;
 import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.User;
+import com.daw.facturapp.app.models.services.ClientServiceImpl;
 import com.daw.facturapp.app.models.services.EnterpriseServiceImpl;
 import com.daw.facturapp.app.models.services.UserServiceImpl;
+import com.daw.facturapp.app.utils.paginator.PageRender;
 
 @Controller
 @RequestMapping("/enterprise")
@@ -36,6 +42,9 @@ public class EnterpriseController {
 	
 	@Autowired
 	private EnterpriseServiceImpl enterpriseService;
+	
+	@Autowired
+	private ClientServiceImpl clientService;
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -98,4 +107,71 @@ public class EnterpriseController {
 		return "redirect:/";
 	}
 
+	@GetMapping("/{id}/clients")
+	public String clients(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			@RequestParam(name="page", defaultValue="0") int page) throws Exception {
+		User user = (User) userService.findByUsername(auth.getName());
+		Enterprise enterprise = enterpriseService.findById(id);
+		
+		Pageable pageRequest = PageRequest.of(page, 4);
+		Page<Client> clients = 
+				clientService.findByEnterprise(enterprise.getId(), pageRequest);
+		PageRender<Client> pageRender = 
+				new PageRender<Client>("/enterprise/" + enterprise.getId() + "/clients", clients);
+		
+		for(Client c: clients) {
+			System.out.println(c);
+		}
+		
+		model.addAttribute("clients", clients);
+		model.addAttribute("page", pageRender);
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		return "enterprise/clients";
+	}
+	
+	@GetMapping("/{id}/add_clients")
+	public String addClient(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth) throws Exception {
+		User user = (User) userService.findByUsername(auth.getName());
+		Enterprise enterprise = enterpriseService.findById(id);
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		model.addAttribute("client", new Client());
+		return "enterprise/add_client";
+	}
+	
+	@PostMapping("/add_client")
+	public String addClient(@Valid Client client, BindingResult result,
+			@RequestParam("enterprise") Long id,
+			Model model, Locale locale,
+			Authentication auth,
+			RedirectAttributes flash) throws Exception {
+		Enterprise enterprise = enterpriseService.findById(id);
+		
+		if(result.hasErrors()) {
+			model.addAttribute("title", enterprise.getName());
+			model.addAttribute("enterprise", enterprise);
+			return "enterprise/add_client";
+		}
+		
+		enterprise.addClient(client);
+		clientService.save(client);
+		flash.addFlashAttribute("enterprise", enterprise);
+		flash.addFlashAttribute("success", "Cliente añadido con éxito");
+		
+		return "redirect:/enterprise/" + enterprise.getId() + "/clients";
+	}
+	
+	@GetMapping("/{id}/products")
+	public String products(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth) throws Exception {
+		User user = (User) userService.findByUsername(auth.getName());
+		Enterprise enterprise = enterpriseService.findById(id);
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		return "enterprise/products";
+	}
+	
 }

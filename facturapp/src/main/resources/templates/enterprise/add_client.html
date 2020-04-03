@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-center text-primary">Añadir Cliente</h1>
+            	
+            	<form th:action="@{/enterprise/add_client}" method="post"
+            		th:object="${client}">
+            		<input type="text" name="enterprise" th:value="${enterprise.id}">
+				 	<div class="form-group">
+				    	<label for="nif">CIF/NIF</label>
+				    	<input type="text" class="form-control" id="nif" name="nif" required
+				    		th:field="*{nif}">
+				  	</div>
+				 	<div class="form-group">
+					    <label for="name">Nombre</label>
+					    <input type="text" class="form-control" id="name" name="name" required
+					    	th:field="*{name}">
+				  	</div>
+				  	<button type="submit" class="btn btn-primary"
+						th:text="#{text.user.add.enterprise.form.button.submit}"></button>
+					<a class="btn btn-secondary" th:href="@{/}"
+						th:utext="#{text.user.add.enterprise.form.button.return}"></a>
+				</form>
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

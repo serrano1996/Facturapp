@@ -19,6 +19,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Entity
 @Table(name="enterprises")
 public class Enterprise implements Serializable {

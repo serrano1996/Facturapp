@@ -13,9 +13,9 @@
         	<nav th:replace="layout/layout :: navi"></nav>
             
             <div class="container">
-            	<h1 class="text-center text-primary" th:text="${enterprise.name}"></h1>
+            	<h1 class="text-primary" th:text="${enterprise.name}"></h1>
             	
-            	<div class="row justify-content-center">
+            	<div class="row">
 	            	<div class="card col-sm-12 col-lg-8">        	
 		            	<div class="row justify-content-center pt-2">
 		            		<div class="col-sm-12 col-md-3 col-lg-3">
@@ -62,9 +62,9 @@
 	            	</div>
             	</div> 
             
-            	<div class="row justify-content-center mt-2">
+            	<div class="row mt-2">
             		<div class="col-3">
-            			<a th:href="@{'/admin/users'}">
+            			<a th:href="@{'/enterprise/'} + ${enterprise.id} + '/clients'">
 	            			<div class="card bg-dark text-white">
 							  <img class="card-img-top" th:src="@{'/images/clients.png'}" alt="users">
 							  <div class="card-img-overlay">
@@ -74,7 +74,7 @@
 						</a>
             		</div>
             		<div class="col-3">
-            			<a th:href="@{'/admin/users'}">
+            			<a th:href="@{'/enterprise/'} + ${enterprise.id} + '/products'">
 	            			<div class="card bg-dark text-white">
 							  <img class="card-img-top" th:src="@{'/images/products.png'}" alt="users">
 							  <div class="card-img-overlay">

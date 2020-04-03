@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-center text-primary">Clientes</h1>
+            	
+            	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_clients'">Añadir cliente</a>
+            	
+            	<table th:if="${!enterprise.clients.isEmpty()}" class="table table-bordered table-striped">
+					<thead class="thead-dark">
+						<tr>
+							<th class="text-center">NIF/CIF</th>
+							<th class="text-center">Denominación</th>
+							<th class="text-center">Fecha de alta</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="client: ${clients}">
+							<td class="text-center" th:text="${client.nif}"></td>
+							<td class="text-center" th:text="${client.name}"></td>
+							<td class="text-center" th:text="${client.createAt}"></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav th:if="${!enterprise.clients.isEmpty()}" th:replace="layout/paginator-nav :: paginator"></nav>
+
+				<h4 th:if="${enterprise.clients.isEmpty()}">Ningún cliente registrado aún</h4>
+            	
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
