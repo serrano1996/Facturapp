@@ -214,6 +214,11 @@ public class EnterpriseController {
 		return "redirect:/enterprise/" + enterprise + "/clients";
 	}
 	
+	@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
+	public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
+		return clientService.findById(id);
+	}
+	
 	//@GetMapping("/{id}/products")
 	//public String products(@PathVariable Long id, Model model,
 	//		Locale locale, Authentication auth) throws Exception {
@@ -222,12 +227,6 @@ public class EnterpriseController {
 	//	model.addAttribute("user", user);
 	//	model.addAttribute("title", enterprise.getName());
 	//	return "enterprise/products";
-	//}
-	
-	//@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
-	//public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
-	//	//System.out.println(clientService.findById(id));
-	//	return clientService.findById(id);
 	//}
 	
 }
