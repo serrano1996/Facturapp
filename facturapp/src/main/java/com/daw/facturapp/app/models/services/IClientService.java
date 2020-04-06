@@ -7,6 +7,8 @@ import com.daw.facturapp.app.models.entities.Client;
 
 public interface IClientService {
 	
+	public Client findById(Long id) throws Exception;
+	
 	public Client save (Client client);
 	
 	public Page<Client> findByEnterprise(Long enterprise_id, Pageable pageable);

@@ -128,7 +128,7 @@
      		//console.log(id);
      		$.ajax({
      			type: 'GET',
-     			url: 'http://localhost:8080/admin/load_user/' + id,
+     			url: '/admin/load_user/' + id,
      			success: function(res) {
      				console.log(res);
      				$("#name").val(res.name + " " + res.lastname);

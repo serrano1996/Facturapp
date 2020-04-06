@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +55,7 @@ public class EnterpriseController {
 			@PathVariable Long id) throws Exception {
 		User user = (User) userService.findByUsername(auth.getName());
 		Enterprise enterprise = enterpriseService.findById(id);
-		
+			
 		model.addAttribute("enterprise", enterprise);
 		model.addAttribute("user", user);
 		model.addAttribute("title", enterprise.getName());
@@ -121,7 +122,7 @@ public class EnterpriseController {
 		PageRender<Client> pageRender = 
 				new PageRender<Client>("/enterprise/" + enterprise.getId() + "/clients", clients);
 
-		
+		model.addAttribute("enterprise", enterprise);
 		model.addAttribute("clients", clients);
 		model.addAttribute("page", pageRender);
 		model.addAttribute("user", user);
@@ -155,6 +156,7 @@ public class EnterpriseController {
 		}
 		
 		enterprise.addClient(client);
+		//client.setEnterprise(enterprise);
 		clientService.save(client);
 		flash.addFlashAttribute("enterprise", enterprise);
 		flash.addFlashAttribute("success", 
@@ -163,14 +165,69 @@ public class EnterpriseController {
 		return "redirect:/enterprise/" + enterprise.getId();
 	}
 	
-	@GetMapping("/{id}/products")
-	public String products(@PathVariable Long id, Model model,
-			Locale locale, Authentication auth) throws Exception {
-		User user = (User) userService.findByUsername(auth.getName());
-		Enterprise enterprise = enterpriseService.findById(id);
-		model.addAttribute("user", user);
-		model.addAttribute("title", enterprise.getName());
-		return "enterprise/products";
+	@PostMapping("/client/save")
+	public String saveClient(@RequestParam("client") Long id,
+			@RequestParam("enterprise") Long enterprise,
+			@RequestParam("nif") String nif,
+			@RequestParam("name") String name,
+			RedirectAttributes flash,
+			Locale locale)  {
+		
+		Enterprise e;
+		try {
+			e = enterpriseService.findById(enterprise);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		Client client;
+		try {
+			client = clientService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!clientService.isCostumerBelongsToEnterprise(client, e)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.client.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		// Verificación de campos vacios.
+		if(nif.equals("") || name.equals("")) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.alert.error.edit", null, locale));
+			return "redirect:/enterprise/" + enterprise + "/clients";
+		}
+
+		client.setNif(nif);
+		client.setName(name);
+		clientService.save(client);
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.client.alert.success.edit", null, locale));
+		return "redirect:/enterprise/" + enterprise + "/clients";
 	}
+	
+	//@GetMapping("/{id}/products")
+	//public String products(@PathVariable Long id, Model model,
+	//		Locale locale, Authentication auth) throws Exception {
+	//	User user = (User) userService.findByUsername(auth.getName());
+	//	Enterprise enterprise = enterpriseService.findById(id);
+	//	model.addAttribute("user", user);
+	//	model.addAttribute("title", enterprise.getName());
+	//	return "enterprise/products";
+	//}
+	
+	//@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
+	//public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
+	//	//System.out.println(clientService.findById(id));
+	//	return clientService.findById(id);
+	//}
 	
 }

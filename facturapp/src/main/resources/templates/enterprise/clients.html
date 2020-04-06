@@ -34,7 +34,8 @@
 							<td class="text-center">
 								<button class="btn btn-primary"><i class="fas fa-info-circle"></i></button>
 								<button class="btn btn-primary"><i class="fas fa-file-invoice"></i></button>
-								<button class="btn btn-warning"><i class="fas fa-user-edit"></i></button>
+								<button class="btn btn-warning" th:value="${client.id}" name="edit"
+									data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-user-edit"></i></button>
 								<button class="btn btn-danger"><i class="fas fa-trash"></i></button>
 							</td>
 						</tr>
@@ -44,13 +45,63 @@
 					<nav th:replace="layout/paginator-nav :: paginator"></nav>
 				</div>
 				
-				<h4 th:if="${enterprise.clients.isEmpty()}">Ningún cliente registrado aún</h4>
-            	
+				<h4 th:if="${enterprise.clients.isEmpty()}" 
+					th:text="#{text.client.home.no.client}"></h4>
             </div>
             
         </div>
      </div>
+     
+     <!-- Modal -->
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title text-primary" id="exampleModalLongTitle">
+		        	<i class="fas fa-user-edit"></i> Editar datos del Cliente</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        <form th:action="@{/enterprise/client/save}" method="post">
+					<div class="form-group">
+						<label for="nif">NIF/CIF</label> 
+						<input type="text" class="form-control" id="nif" name="nif" required>
+					</div>
+					<div class="form-group">
+						<label for="name">Nombre</label> 
+						<input type="text" class="form-control" id="name" name="name" required>
+					</div>
+					<input type="hidden" id="enterprise" name="enterprise" th:value="${enterprise.id}" 
+							required>
+					<input type="hidden" id="client" name="client" required>
+					<div class="text-right">
+						<button type="submit" class="btn btn-warning"
+							th:text="#{text.user.add.enterprise.form.button.save}"></button>
+					</div>
+		        </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
          
      <footer th:replace="layout/layout :: footer"></footer>
+     <script type="text/javascript">
+     	$("button[name='edit']").click(function() {
+     		let id = $(this).val();
+     		//console.log(id);
+     		$.ajax({
+     			type: 'GET',
+     			url: '/enterprise/load_client/' + id,
+     			success: function(res) {
+     				//console.log(res);
+     				$("#client").val(res.id);
+     				$("#nif").val(res.nif);
+     				$("#name").val(res.name);
+     			}
+     		});
+     	})
+     </script>
 </body>
 </html>

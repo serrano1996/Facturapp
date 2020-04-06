@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,6 +37,10 @@ public class Client implements Serializable {
 	@Column(name="created_at")
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
+	
+	//@ManyToOne
+	//@JoinColumn(name="enterprise_id")
+	//private Enterprise enterprise;
 	
 	@PrePersist
 	public void prePersist() {
@@ -72,11 +78,18 @@ public class Client implements Serializable {
 	public void setCreateAt(Date createAt) {
 		this.createAt = createAt;
 	}
-	
+
+	//public Enterprise getEnterprise() {
+	//	return enterprise;
+	//}
+
+	//public void setEnterprise(Enterprise enterprise) {
+	//	this.enterprise = enterprise;
+	//}
+
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt="
-				+ createAt + "]";
+		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt=" + createAt + "]";
 	}
 
 	@Override
