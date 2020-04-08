@@ -34,9 +34,10 @@
 							<td class="text-center">
 								<button class="btn btn-primary"><i class="fas fa-info-circle"></i></button>
 								<button class="btn btn-primary"><i class="fas fa-file-invoice"></i></button>
-								<button class="btn btn-warning" th:value="${client.id}" name="edit"
+								<button class="btn btn-warning" th:value="${client.id}" name="editCostumer"
 									data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-user-edit"></i></button>
-								<button class="btn btn-danger"><i class="fas fa-trash"></i></button>
+								<button class="btn btn-danger" th:value="${client.id}" name="deleteCostumer"
+									data-toggle="modal" data-target="#confirmDelete"><i class="fas fa-trash"></i></button>
 							</td>
 						</tr>
 					</tbody>
@@ -85,23 +86,37 @@
 		    </div>
 		  </div>
 		</div>
+		
+		<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title text-danger" id="exampleModalLongTitle"
+		        	th:utext="#{text.client.delete.title}"></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body text-center">
+		      	<h5 th:text="#{text.client.delete.warning}"></h5>
+		        <form th:action="@{/enterprise/client/delete}" method="post">
+		        	<input type="hidden" id="remEId" name="enterprise" th:value="${enterprise.id}" 
+							required>
+					<input type="hidden" id="remCId" name="client" required>
+					<div class="form-group">
+						<input type="password" name="password" class="form-control"
+							th:placeholder="#{text.client.delete.confirm}" required>
+					</div>
+					<button type="button" class="btn btn-primary" name="deleteCancel"
+						th:text="#{text.client.delete.confirm.button.cancel}"></button>
+		        	<button type="submit" class="btn btn-danger"
+		        		th:text="#{text.client.delete.confirm.button.delete}"></button>
+		        </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
          
      <footer th:replace="layout/layout :: footer"></footer>
-     <script type="text/javascript">
-     	$("button[name='edit']").click(function() {
-     		let id = $(this).val();
-     		//console.log(id);
-     		$.ajax({
-     			type: 'GET',
-     			url: '/enterprise/load_client/' + id,
-     			success: function(res) {
-     				//console.log(res);
-     				$("#client").val(res.id);
-     				$("#nif").val(res.nif);
-     				$("#name").val(res.name);
-     			}
-     		});
-     	})
-     </script>
 </body>
 </html>

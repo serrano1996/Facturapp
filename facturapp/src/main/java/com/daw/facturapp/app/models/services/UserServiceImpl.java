@@ -39,7 +39,7 @@ public class UserServiceImpl implements IUserService {
 	private HttpServletRequest request;
 	
 	@Autowired
-	private  BCryptPasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
 	
 	/**
 	 * Valida que el nombre de usuario sea único.

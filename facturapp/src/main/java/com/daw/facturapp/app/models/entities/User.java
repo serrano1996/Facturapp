@@ -82,7 +82,7 @@ public class User implements Serializable {
 	@Column(name="active", columnDefinition="TINYINT(1)")
 	private Boolean enabled;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name="user_id")
 	private Set<Enterprise> enterprises;
 	

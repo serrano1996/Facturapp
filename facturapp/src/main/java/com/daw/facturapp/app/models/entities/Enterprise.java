@@ -3,6 +3,7 @@ package com.daw.facturapp.app.models.entities;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -85,6 +86,15 @@ public class Enterprise implements Serializable {
 	public void addClient(Client client) {
 		this.clients.add(client);
 	}
+	
+	public void removeClient(Long id) {
+        Iterator<Client> it = this.clients.iterator();
+        while(it.hasNext()) {
+        	if(it.next().getId() == id) {
+        		it.remove();
+        	}
+        }
+    } 
 	
 	public void addProduct(Product product) {
 		this.products.add(product);

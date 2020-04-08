@@ -122,22 +122,5 @@
 		</div>
          
      <footer th:replace="layout/layout :: footer"></footer>
-     <script type="text/javascript">
-     	$("button[name='info']").click(function() {
-     		let id = $(this).val();
-     		//console.log(id);
-     		$.ajax({
-     			type: 'GET',
-     			url: '/admin/load_user/' + id,
-     			success: function(res) {
-     				console.log(res);
-     				$("#name").val(res.name + " " + res.lastname);
-     				$("#email").val(res.email);
-     				$("#username").val(res.username);
-     				$("#date").val(res.createAt);
-     			}
-     		});
-     	})
-     </script>
 </body>
 </html>

@@ -10,7 +10,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.codec.ClientCodecConfigurer.ClientDefaultCodecs;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,6 +51,13 @@ public class EnterpriseController {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
+	
+	/***********************************************************************/
+	//		ENTERPRISE
+	/***********************************************************************/
 	
 	@GetMapping("/{id}")
 	public String index(Model model, Locale locale, Authentication auth,
@@ -133,13 +142,19 @@ public class EnterpriseController {
 		}
 		
 		
+		clientService.deletebyEnterprise(enterprise.getId());
 		user.removeEnterprise(enterprise.getName());
+		enterprise.getClients().clear();
 		enterpriseService.delete(id);
-		model.addAttribute("user", user);
+		
 		flash.addFlashAttribute("success", messageSource.getMessage("text.enterprise.alert.success.delete", null, locale));
 		return "redirect:/";
 	}
 
+	/***********************************************************************/
+	//		COSTUMERS
+	/***********************************************************************/
+	
 	@GetMapping("/{id}/clients")
 	public String clients(@PathVariable Long id, Model model,
 			Locale locale, Authentication auth,
@@ -301,10 +316,70 @@ public class EnterpriseController {
 		return "redirect:/enterprise/" + enterprise + "/clients";
 	}
 	
+	@PostMapping("/client/delete")
+	public String deleteClient(@RequestParam("client") Long id,
+			@RequestParam("enterprise") Long enterprise,
+			@RequestParam("password") String password,
+			RedirectAttributes flash,
+			Authentication auth,
+			Locale locale) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Enterprise e;
+		try {
+			e = enterpriseService.findById(enterprise);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, e)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		Client client;
+		try {
+			client = clientService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!clientService.isCostumerBelongsToEnterprise(client, e)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.client.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		// Verificación del borrado.
+		if(!passwordEncoder.matches(password, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.no.validation", null, locale));
+			return "redirect:/enterprise/" + enterprise + "/clients";
+		}
+
+		e.removeClient(client.getId());
+		clientService.delete(client.getId());
+		
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.client.alert.success.delete", null, locale));
+		return "redirect:/enterprise/" + enterprise + "/clients";
+	}
+	
 	@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
 	public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
 		return clientService.findById(id);
 	}
+	
+	/***********************************************************************/
+	//		PRODUCTS
+	/***********************************************************************/
 	
 	//@GetMapping("/{id}/products")
 	//public String products(@PathVariable Long id, Model model,

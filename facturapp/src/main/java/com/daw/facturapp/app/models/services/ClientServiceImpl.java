@@ -31,6 +31,17 @@ public class ClientServiceImpl implements IClientService {
 		return clientDao.save(client);
 	}
 	
+	@Override
+	public void delete(Long id) {
+		clientDao.deleteById(id);
+		
+	}
+	
+	@Override
+	public void deletebyEnterprise(Long id) {
+		clientDao.deleteByEnterprise(id);		
+	}
+	
 	public boolean isCostumerBelongsToEnterprise(Client client, Enterprise enterprise) {
 		for(Client c : enterprise.getClients()) {
 			if(c.getId().equals(client.getId())) {

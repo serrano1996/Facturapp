@@ -12,5 +12,9 @@ public interface IClientService {
 	public Client save (Client client);
 	
 	public Page<Client> findByEnterprise(Long enterprise_id, Pageable pageable);
+	
+	public void delete(Long id);
+	
+	public void deletebyEnterprise(Long id);
 
 }
