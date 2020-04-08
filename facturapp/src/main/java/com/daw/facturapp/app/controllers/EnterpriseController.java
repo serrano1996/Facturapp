@@ -52,9 +52,24 @@ public class EnterpriseController {
 	
 	@GetMapping("/{id}")
 	public String index(Model model, Locale locale, Authentication auth,
-			@PathVariable Long id) throws Exception {
+			@PathVariable Long id, RedirectAttributes flash) {
 		User user = (User) userService.findByUsername(auth.getName());
-		Enterprise enterprise = enterpriseService.findById(id);
+		
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
 			
 		model.addAttribute("enterprise", enterprise);
 		model.addAttribute("user", user);
@@ -100,7 +115,24 @@ public class EnterpriseController {
 	public String delete(@PathVariable Long id, Model model, 
 		Locale locale, Authentication auth, RedirectAttributes flash) throws Exception {
 		User user = (User) userService.findByUsername(auth.getName());
-		Enterprise enterprise = enterpriseService.findById(id);
+		
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		
 		user.removeEnterprise(enterprise.getName());
 		enterpriseService.delete(id);
 		model.addAttribute("user", user);
@@ -111,9 +143,25 @@ public class EnterpriseController {
 	@GetMapping("/{id}/clients")
 	public String clients(@PathVariable Long id, Model model,
 			Locale locale, Authentication auth,
-			@RequestParam(name="page", defaultValue="0") int page) throws Exception {
+			@RequestParam(name="page", defaultValue="0") int page,
+			RedirectAttributes flash) {
 		User user = (User) userService.findByUsername(auth.getName());
-		Enterprise enterprise = enterpriseService.findById(id);
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
 		
 		// Paginación de clientes.
 		Pageable pageRequest = PageRequest.of(page, 4);
@@ -132,9 +180,25 @@ public class EnterpriseController {
 	
 	@GetMapping("/{id}/add_clients")
 	public String addClient(@PathVariable Long id, Model model,
-			Locale locale, Authentication auth) throws Exception {
+			Locale locale, Authentication auth, RedirectAttributes flash) {
 		User user = (User) userService.findByUsername(auth.getName());
-		Enterprise enterprise = enterpriseService.findById(id);
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
 		model.addAttribute("user", user);
 		model.addAttribute("title", enterprise.getName());
 		model.addAttribute("client", new Client());
@@ -146,8 +210,24 @@ public class EnterpriseController {
 			@RequestParam("enterprise") Long id,
 			Model model, Locale locale,
 			Authentication auth,
-			RedirectAttributes flash) throws Exception {
-		Enterprise enterprise = enterpriseService.findById(id);
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
 		
 		if(result.hasErrors()) {
 			model.addAttribute("title", enterprise.getName());
@@ -156,7 +236,6 @@ public class EnterpriseController {
 		}
 		
 		enterprise.addClient(client);
-		//client.setEnterprise(enterprise);
 		clientService.save(client);
 		flash.addFlashAttribute("enterprise", enterprise);
 		flash.addFlashAttribute("success", 
@@ -171,7 +250,9 @@ public class EnterpriseController {
 			@RequestParam("nif") String nif,
 			@RequestParam("name") String name,
 			RedirectAttributes flash,
+			Authentication auth,
 			Locale locale)  {
+		User user = (User) userService.findByUsername(auth.getName());
 		
 		Enterprise e;
 		try {
@@ -180,6 +261,12 @@ public class EnterpriseController {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
 			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, e)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
 			return "redirect:/";
 		}
 		
