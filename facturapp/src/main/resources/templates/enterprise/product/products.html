@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-center text-primary" th:text="#{text.product.home.title}"></h1>
+            	
+            	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_products'"
+            		th:utext="#{text.product.home.add.button}"></a>
+            	
+            	<div class="row">
+            		<div class="card mr-1 col-3" th:each="product: ${products}">
+            			<img class="card-img-top" 
+								th:src="@{/enterprise/product/img/view/} + ${product.id}" th:alt="${product.longName}" />
+					  <div class="card-body">
+					    <h5 class="card-title" th:text="${product.shortName}"></h5>
+					    <h6 class="card-subtitle mb-2 text-muted" th:text="${product.longName}"></h6>
+					    
+					  </div>
+					</div>
+            	</div>
+            	
+            	<h4 th:if="${enterprise.products.isEmpty()}" 
+					th:text="#{text.product.home.no.product}"></h4>
+            	
+            	<div th:if="${!enterprise.products.isEmpty()}">
+					<nav th:replace="layout/paginator-nav :: paginator"></nav>
+				</div>
+            	
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

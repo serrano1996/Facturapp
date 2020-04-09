@@ -3,6 +3,8 @@ package com.daw.facturapp.app.controllers;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.codec.ClientCodecConfigurer.ClientDefaultCodecs;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -29,9 +30,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.facturapp.app.models.entities.Client;
 import com.daw.facturapp.app.models.entities.Enterprise;
+import com.daw.facturapp.app.models.entities.Product;
 import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.ClientServiceImpl;
 import com.daw.facturapp.app.models.services.EnterpriseServiceImpl;
+import com.daw.facturapp.app.models.services.ProductServiceImpl;
 import com.daw.facturapp.app.models.services.UserServiceImpl;
 import com.daw.facturapp.app.utils.paginator.PageRender;
 
@@ -48,6 +51,9 @@ public class EnterpriseController {
 	
 	@Autowired
 	private ClientServiceImpl clientService;
+	
+	@Autowired
+	private ProductServiceImpl productService;
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -190,7 +196,7 @@ public class EnterpriseController {
 		model.addAttribute("page", pageRender);
 		model.addAttribute("user", user);
 		model.addAttribute("title", enterprise.getName());
-		return "enterprise/clients";
+		return "enterprise/client/clients";
 	}
 	
 	@GetMapping("/{id}/add_clients")
@@ -217,7 +223,7 @@ public class EnterpriseController {
 		model.addAttribute("user", user);
 		model.addAttribute("title", enterprise.getName());
 		model.addAttribute("client", new Client());
-		return "enterprise/add_client";
+		return "enterprise/client/add_client";
 	}
 	
 	@PostMapping("/add_client")
@@ -247,7 +253,7 @@ public class EnterpriseController {
 		if(result.hasErrors()) {
 			model.addAttribute("title", enterprise.getName());
 			model.addAttribute("enterprise", enterprise);
-			return "enterprise/add_client";
+			return "enterprise/client/add_client";
 		}
 		
 		enterprise.addClient(client);
@@ -381,14 +387,137 @@ public class EnterpriseController {
 	//		PRODUCTS
 	/***********************************************************************/
 	
-	//@GetMapping("/{id}/products")
-	//public String products(@PathVariable Long id, Model model,
-	//		Locale locale, Authentication auth) throws Exception {
-	//	User user = (User) userService.findByUsername(auth.getName());
-	//	Enterprise enterprise = enterpriseService.findById(id);
-	//	model.addAttribute("user", user);
-	//	model.addAttribute("title", enterprise.getName());
-	//	return "enterprise/products";
-	//}
+	@GetMapping("/{id}/products")
+	public String products(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			@RequestParam(name="page", defaultValue="0") int page,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		// Paginación de productos.
+		Pageable pageRequest = PageRequest.of(page, 6);
+		Page<Product> products = 
+				productService.findByEnterprise(enterprise.getId(), pageRequest);
+		PageRender<Product> pageRender = 
+				new PageRender<Product>("/enterprise/" + enterprise.getId() + "/products", products);
+
+		model.addAttribute("enterprise", enterprise);
+		model.addAttribute("products", products);
+		model.addAttribute("page", pageRender);
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		return "enterprise/product/products";
+	}
+	
+	@GetMapping("/{id}/add_products")
+	public String addProduct(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth, RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		model.addAttribute("product", new Product());
+		return "enterprise/product/add_product";
+	}
+	
+	@PostMapping("/add_product")
+	public String addProduct(@Valid Product product, BindingResult result,
+			@RequestParam("img") MultipartFile img,
+			@RequestParam("enterprise") Long id,
+			Model model, Locale locale,
+			Authentication auth,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		if(result.hasErrors()) {
+			model.addAttribute("title", enterprise.getName());
+			model.addAttribute("enterprise", enterprise);
+			return "enterprise/product/add_product";
+		}
+		
+		if (!img.isEmpty()) {			
+			try {
+				byte[] image = img.getBytes();
+				product.setImage(image);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		enterprise.addProduct(product);
+		productService.save(product);
+		flash.addFlashAttribute("enterprise", enterprise);
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.product.alert.success.create", null, locale));
+		return "redirect:/enterprise/" + enterprise.getId();
+	}
+	
+	@GetMapping("/product/img/view/{id}")
+	public void view(@PathVariable Long id, HttpServletResponse response) throws ServletException, 
+		IOException {
+		Product product = null;
+		
+		try {
+			product = productService.findById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(product.getImage() != null) {
+			response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+			response.getOutputStream().write(product.getImage());
+			response.getOutputStream().close();
+		} else {
+			response.getOutputStream().close();
+		}
+	}
 	
 }

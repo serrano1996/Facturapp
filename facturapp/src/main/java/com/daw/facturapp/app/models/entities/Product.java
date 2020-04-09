@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="products")
@@ -28,18 +29,18 @@ public class Product implements Serializable {
 	
 	@NotBlank						
 	@Column(name="long_name")
-	private String longNAme;
+	private String longName;
 	
-	@NotBlank						
+	@NotNull						
 	@Column
 	private Float price;
 	
-	@NotBlank						
+	@NotNull					
 	@Column
 	private Float stock;
 	
 	@Lob
-	@Column(nullable=true)
+	@Column
 	private byte[] image;
 
 	public Long getId() {
@@ -58,12 +59,12 @@ public class Product implements Serializable {
 		this.shortName = shortName;
 	}
 
-	public String getLongNAme() {
-		return longNAme;
+	public String getLongName() {
+		return longName;
 	}
 
-	public void setLongNAme(String longNAme) {
-		this.longNAme = longNAme;
+	public void setLongName(String longNAme) {
+		this.longName = longNAme;
 	}
 
 	public Float getPrice() {
@@ -92,7 +93,7 @@ public class Product implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Product [id=" + id + ", shortName=" + shortName + ", longNAme=" + longNAme + ", price=" + price
+		return "Product [id=" + id + ", shortName=" + shortName + ", longNAme=" + longName + ", price=" + price
 				+ ", stock=" + stock + ", image=" + Arrays.toString(image) + "]";
 	}
 
@@ -102,7 +103,7 @@ public class Product implements Serializable {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + Arrays.hashCode(image);
-		result = prime * result + ((longNAme == null) ? 0 : longNAme.hashCode());
+		result = prime * result + ((longName == null) ? 0 : longName.hashCode());
 		result = prime * result + ((price == null) ? 0 : price.hashCode());
 		result = prime * result + ((shortName == null) ? 0 : shortName.hashCode());
 		result = prime * result + ((stock == null) ? 0 : stock.hashCode());
@@ -125,10 +126,10 @@ public class Product implements Serializable {
 			return false;
 		if (!Arrays.equals(image, other.image))
 			return false;
-		if (longNAme == null) {
-			if (other.longNAme != null)
+		if (longName == null) {
+			if (other.longName != null)
 				return false;
-		} else if (!longNAme.equals(other.longNAme))
+		} else if (!longName.equals(other.longName))
 			return false;
 		if (price == null) {
 			if (other.price != null)

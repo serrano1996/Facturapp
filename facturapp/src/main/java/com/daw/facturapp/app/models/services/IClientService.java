@@ -9,7 +9,7 @@ public interface IClientService {
 	
 	public Client findById(Long id) throws Exception;
 	
-	public Client save (Client client);
+	public Client save(Client client);
 	
 	public Page<Client> findByEnterprise(Long enterprise_id, Pageable pageable);
 	
