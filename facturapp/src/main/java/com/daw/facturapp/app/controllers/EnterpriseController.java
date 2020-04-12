@@ -267,29 +267,13 @@ public class EnterpriseController {
 	
 	@PostMapping("/client/save")
 	public String saveClient(@RequestParam("client") Long id,
-			@RequestParam("enterprise") Long enterprise,
+			//@RequestParam("enterprise") Long enterprise,
 			@RequestParam("nif") String nif,
 			@RequestParam("name") String name,
 			RedirectAttributes flash,
 			Authentication auth,
 			Locale locale)  {
 		User user = (User) userService.findByUsername(auth.getName());
-		
-		Enterprise e;
-		try {
-			e = enterpriseService.findById(enterprise);
-		} catch (Exception ex) {
-			flash.addFlashAttribute("error", 
-					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
-			System.out.println(ex.getMessage());
-			return "redirect:/";
-		}
-		
-		if(!enterpriseService.isEnterpriseBelongsToUser(user, e)) {
-			flash.addFlashAttribute("error", 
-					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
-			return "redirect:/";
-		}
 		
 		Client client;
 		try {
@@ -301,7 +285,15 @@ public class EnterpriseController {
 			return "redirect:/";
 		}
 		
-		if(!clientService.isCostumerBelongsToEnterprise(client, e)) {
+		Enterprise enterprise = client.getEnterprise();
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		if(!clientService.isCostumerBelongsToEnterprise(client, enterprise)) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.enterprise.client.error.not.mismath", null, locale));
 			return "redirect:/";
@@ -311,7 +303,7 @@ public class EnterpriseController {
 		if(nif.equals("") || name.equals("")) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.client.alert.error.edit", null, locale));
-			return "redirect:/enterprise/" + enterprise + "/clients";
+			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
 		}
 
 		client.setNif(nif);
@@ -319,7 +311,7 @@ public class EnterpriseController {
 		clientService.save(client);
 		flash.addFlashAttribute("success", 
 				messageSource.getMessage("text.client.alert.success.edit", null, locale));
-		return "redirect:/enterprise/" + enterprise + "/clients";
+		return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
 	}
 	
 	@PostMapping("/client/delete")
@@ -380,7 +372,9 @@ public class EnterpriseController {
 	
 	@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
 	public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
-		return clientService.findById(id);
+		Client client = clientService.findById(id);
+		client.setEnterprise(null);
+		return client;
 	}
 	
 	/***********************************************************************/

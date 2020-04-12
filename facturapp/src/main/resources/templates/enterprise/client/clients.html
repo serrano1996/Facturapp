@@ -100,8 +100,6 @@
 		      <div class="modal-body text-center">
 		      	<h5 th:text="#{text.client.delete.warning}"></h5>
 		        <form th:action="@{/enterprise/client/delete}" method="post">
-		        	<input type="hidden" id="remEId" name="enterprise" th:value="${enterprise.id}" 
-							required>
 					<input type="hidden" id="remCId" name="client" required>
 					<div class="form-group">
 						<input type="password" name="password" class="form-control"

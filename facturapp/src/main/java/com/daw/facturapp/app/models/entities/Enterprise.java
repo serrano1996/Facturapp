@@ -72,10 +72,12 @@ public class Enterprise implements Serializable {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name="enterprise_id")
+	//@OneToMany(mappedBy="enterprise", fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	private Set<Client> clients;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name = "enterprise_id")
+	//@OneToMany(mappedBy="enterprise", fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	private Set<Product> products;
 	
 	public Enterprise() {

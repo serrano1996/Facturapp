@@ -1,9 +1,9 @@
 package com.daw.facturapp.app.models.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,52 +12,40 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-//import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name="clients")
-public class Client implements Serializable {
-
+@Table(name="invoices")
+public class Invoice implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank						
-	@Column
-	private String nif;
-	
-	@NotBlank						
-	@Column
-	private String name;						
-	
-	@Column(name="created_at")
 	@Temporal(TemporalType.DATE)
+	@Column(name = "create_at")
 	private Date createAt;
 	
-	@ManyToOne
-	@JoinColumn(name="enterprise_id")
-	private Enterprise enterprise;
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JoinColumn(name="invoice_id")
+	private List<ItemInvoice> items;
 	
-	@OneToMany(mappedBy="client", fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
-	private Set<Invoice> invoices;
+	@ManyToOne(fetch=FetchType.LAZY)
+	private Client client;
 	
-	public Client() {
-		this.invoices = new HashSet<Invoice>();
+	public Invoice() {
+		this.items = new ArrayList<ItemInvoice>();
 	}
 	
-	@PrePersist
-	public void prePersist() {
-		this.createAt = new Date();
+	public void addItemFactura(ItemInvoice item) {
+		this.items.add(item);
 	}
 
 	public Long getId() {
@@ -68,22 +56,6 @@ public class Client implements Serializable {
 		this.id = id;
 	}
 
-	public String getNif() {
-		return nif;
-	}
-
-	public void setNif(String nif) {
-		this.nif = nif;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Date getCreateAt() {
 		return createAt;
 	}
@@ -92,27 +64,30 @@ public class Client implements Serializable {
 		this.createAt = createAt;
 	}
 
-	public Enterprise getEnterprise() {
-		return enterprise;
+	public List<ItemInvoice> getItems() {
+		return items;
 	}
 
-	public void setEnterprise(Enterprise enterprise) {
-		this.enterprise = enterprise;
+	public void setItems(List<ItemInvoice> items) {
+		this.items = items;
 	}
 
-	@Override
-	public String toString() {
-		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt=" + createAt + "]";
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((client == null) ? 0 : client.hashCode());
 		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((nif == null) ? 0 : nif.hashCode());
+		result = prime * result + ((items == null) ? 0 : items.hashCode());
 		return result;
 	}
 
@@ -124,7 +99,12 @@ public class Client implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Client other = (Client) obj;
+		Invoice other = (Invoice) obj;
+		if (client == null) {
+			if (other.client != null)
+				return false;
+		} else if (!client.equals(other.client))
+			return false;
 		if (createAt == null) {
 			if (other.createAt != null)
 				return false;
@@ -135,17 +115,22 @@ public class Client implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (items == null) {
+			if (other.items != null)
 				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (nif == null) {
-			if (other.nif != null)
-				return false;
-		} else if (!nif.equals(other.nif))
+		} else if (!items.equals(other.items))
 			return false;
 		return true;
+	}
+
+	public Double getTotal() {
+		Double total = 0.0;
+		int size = this.items.size();
+
+		for(int i = 0; i < size; i++) {
+			total += this.items.get(i).calculateAmount();
+		}
+		return total;
 	}
 
 }
