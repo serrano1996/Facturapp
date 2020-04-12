@@ -1,5 +1,7 @@
 package com.daw.facturapp.app.models.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,11 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public Product save(Product product) {
 		return productDao.save(product);
+	}
+
+	@Override
+	public List<Product> findByName(String term, Long enterprise_id) {
+		return productDao.findByLongNameLikeIgnoreCase(term, enterprise_id);
 	}
 
 }

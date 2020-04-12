@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-primary" th:text="#{text.invoice.issue.title}"></h1>
+            	
+            	<div class="row">
+            		<div class="col-2">
+            			<img class="img-fluid" 
+							th:src="@{/img/view/} + ${client.enterprise.id}" th:alt="${client.enterprise.name}" />
+            		</div>
+            		<div class="col">
+            			<div class="card" style="width: 18rem;">
+				  			<div class="card-body">
+							  	<h5 class="card-title" th:text="${client.name}"></h5>
+							    <h6 class="card-subtitle mb-2 text-muted" th:text="${client.nif}"></h6>
+							 </div>
+						</div>
+            		</div>
+            	</div>
+            	
+            	<form th:action="@{/}" th:object="${invoice}"
+					method="post">
+					
+					<input type="hidden" id="enterpriseid" th:value="${client.enterprise.id}">					
+
+					<div class="form-group row my-2">
+						<label for="buscar_producto" class="col-sm-2 col-form-label"
+							th:text="#{text.invoice.issue.field.search}"></label>
+						<div class="col-sm-6">
+							<input type="text" name="search_product" id="search_product"
+								class="form-control" />
+						</div>
+					</div>
+
+					<table th:replace="/enterprise/invoice/items_template :: itemsFactura"></table>
+
+					<table id="load_items"
+						class="table table-sm table-striped table-hover">
+						<thead>
+							<tr>
+								<th th:text="#{text.invoice.issue.line.name}"></th>
+								<th th:text="#{text.invoice.issue.line.price}"></th>
+								<th th:text="#{text.invoice.issue.line.quantity}"></th>
+								<th th:text="#{text.invoice.issue.line.subtotal}"></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<h5>IVA (21%) <span class="badge badge-warning" id="iva">0</span></h5>
+					<h5>Total <span class="badge badge-secondary" id="total">0</span></h5>
+				</form>
+
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+     <script th:src="@{/js/invoice.js}"></script>
+</body>
+</html>

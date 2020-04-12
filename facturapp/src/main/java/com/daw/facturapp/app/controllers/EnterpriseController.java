@@ -1,6 +1,7 @@
 package com.daw.facturapp.app.controllers;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.daw.facturapp.app.models.entities.Client;
 import com.daw.facturapp.app.models.entities.Enterprise;
+import com.daw.facturapp.app.models.entities.Invoice;
 import com.daw.facturapp.app.models.entities.Product;
 import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.ClientServiceImpl;
@@ -512,6 +514,45 @@ public class EnterpriseController {
 		} else {
 			response.getOutputStream().close();
 		}
+	}
+	
+	@GetMapping(value = "/load_products/{term}/{enterprise_id}", produces = { "application/json" })
+	public @ResponseBody List<Product> loadProducts(@PathVariable String term,
+			@PathVariable Long enterprise_id) {
+		return productService.findByName(term, enterprise_id);
+	}
+	
+	/***********************************************************************/
+	//		INVOICES
+	/***********************************************************************/
+	
+	@GetMapping("/costumer/{id}/invoice")
+	public String issue(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Client client = null;
+		try {
+			client = clientService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, client.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+
+		model.addAttribute("invoice", new Invoice());
+		model.addAttribute("client", client);
+		model.addAttribute("user", user);
+		model.addAttribute("title", client.getEnterprise().getName());
+		return "enterprise/invoice/issue";
 	}
 	
 }
