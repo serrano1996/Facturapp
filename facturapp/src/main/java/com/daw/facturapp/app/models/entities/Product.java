@@ -5,12 +5,10 @@ import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,10 +34,6 @@ public class Product implements Serializable {
 	@NotNull						
 	@Column
 	private Float price;
-	
-	@NotNull					
-	@Column
-	private Float stock;
 	
 	@Lob
 	@Column
@@ -80,14 +74,6 @@ public class Product implements Serializable {
 		this.price = price;
 	}
 
-	public Float getStock() {
-		return stock;
-	}
-
-	public void setStock(Float stock) {
-		this.stock = stock;
-	}
-
 	public byte[] getImage() {
 		return image;
 	}
@@ -99,7 +85,7 @@ public class Product implements Serializable {
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", shortName=" + shortName + ", longNAme=" + longName + ", price=" + price
-				+ ", stock=" + stock + ", image=" + Arrays.toString(image) + "]";
+				+ ", image=" + Arrays.toString(image) + "]";
 	}
 
 	@Override
@@ -111,7 +97,6 @@ public class Product implements Serializable {
 		result = prime * result + ((longName == null) ? 0 : longName.hashCode());
 		result = prime * result + ((price == null) ? 0 : price.hashCode());
 		result = prime * result + ((shortName == null) ? 0 : shortName.hashCode());
-		result = prime * result + ((stock == null) ? 0 : stock.hashCode());
 		return result;
 	}
 
@@ -145,11 +130,6 @@ public class Product implements Serializable {
 			if (other.shortName != null)
 				return false;
 		} else if (!shortName.equals(other.shortName))
-			return false;
-		if (stock == null) {
-			if (other.stock != null)
-				return false;
-		} else if (!stock.equals(other.stock))
 			return false;
 		return true;
 	}

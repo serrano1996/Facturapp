@@ -100,6 +100,14 @@ public class Client implements Serializable {
 		this.enterprise = enterprise;
 	}
 
+	public Set<Invoice> getInvoices() {
+		return invoices;
+	}
+
+	public void setInvoices(Set<Invoice> invoices) {
+		this.invoices = invoices;
+	}
+
 	@Override
 	public String toString() {
 		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt=" + createAt + "]";

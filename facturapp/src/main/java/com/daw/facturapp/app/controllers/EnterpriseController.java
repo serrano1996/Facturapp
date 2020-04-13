@@ -32,10 +32,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.daw.facturapp.app.models.entities.Client;
 import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.Invoice;
+import com.daw.facturapp.app.models.entities.ItemInvoice;
 import com.daw.facturapp.app.models.entities.Product;
 import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.ClientServiceImpl;
 import com.daw.facturapp.app.models.services.EnterpriseServiceImpl;
+import com.daw.facturapp.app.models.services.InvoiceServiceImpl;
 import com.daw.facturapp.app.models.services.ProductServiceImpl;
 import com.daw.facturapp.app.models.services.UserServiceImpl;
 import com.daw.facturapp.app.utils.paginator.PageRender;
@@ -56,6 +58,9 @@ public class EnterpriseController {
 	
 	@Autowired
 	private ProductServiceImpl productService;
+	
+	@Autowired
+	private InvoiceServiceImpl invoiceService;
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -553,6 +558,68 @@ public class EnterpriseController {
 		model.addAttribute("user", user);
 		model.addAttribute("title", client.getEnterprise().getName());
 		return "enterprise/invoice/issue";
+	}
+	
+	@PostMapping("/invoice/save")
+	public String saveInvoice(@Valid Invoice invoice, 
+			BindingResult result, Model model,
+			@RequestParam("client") Long id,
+			@RequestParam(name="item_id[]", required=false) Long[] itemId,
+			@RequestParam(name="quantity[]", required=false) Integer[] quantity, 
+			RedirectAttributes flash,
+			Authentication auth,
+			Locale locale) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Client client = null;
+		try {
+			client = clientService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, client.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		if (result.hasErrors()) {
+			//model.addAttribute("error", "Crear Factura");
+			return "redirect:enterprise/costumer/" + client.getId() + "/invoice";
+		}
+
+		if (itemId == null || itemId.length == 0) {
+			flash.addFlashAttribute("error", "Error: La factura NO puede no tener líneas!");
+			return "redirect:enterprise/costumer/" + client.getId() + "/invoice";
+		}
+		
+		for (int i = 0; i < itemId.length; i++) {
+			Product product = null;
+			try {
+				product = productService.findById(itemId[i]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			ItemInvoice line = new ItemInvoice();
+			line.setQuantity(quantity[i]);
+			line.setProduct(product);
+			invoice.addItemFactura(line);
+
+			//log.info("ID: " + itemId[i].toString() + ", cantidad: " + cantidad[i].toString());
+		}
+
+		invoiceService.save(invoice);
+		client.getInvoices().add(invoice);
+		//status.setComplete();
+
+		flash.addFlashAttribute("success", "Factura creada con éxito!");
+
+		return "redirect:/";
 	}
 	
 }

@@ -30,9 +30,9 @@
             		</div>
             	</div>
             	
-            	<form th:action="@{/}" th:object="${invoice}"
+            	<form th:action="@{/enterprise/invoice/save}" th:object="${invoice}"
 					method="post">
-					
+					<input type="hidden" name="client" th:value="${client.id}">	
 					<input type="hidden" id="enterpriseid" th:value="${client.enterprise.id}">					
 
 					<div class="form-group row my-2">
@@ -62,6 +62,9 @@
 					</table>
 					<h5>IVA (21%) <span class="badge badge-warning" id="iva">0</span></h5>
 					<h5>Total <span class="badge badge-secondary" id="total">0</span></h5>
+					<div class="text-right">
+						<button type="submit" class="btn btn-primary">Emitir</button>
+					</div>
 				</form>
 
             </div>
