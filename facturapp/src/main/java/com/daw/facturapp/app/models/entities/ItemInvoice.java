@@ -28,7 +28,8 @@ public class ItemInvoice implements Serializable {
 	private Product product;
 	
 	public Double calculateAmount() {
-		return quantity.doubleValue() * product.getPrice();
+		return Math.rint((quantity.doubleValue() * product.getPrice())*100)/100;
+		//return quantity.doubleValue() * product.getPrice();
 	}
 
 	public Long getId() {

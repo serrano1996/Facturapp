@@ -11,6 +11,13 @@ public class InvoiceServiceImpl implements IInvoiceService {
 	
 	@Autowired
 	private IInvoiceDao invoiceDao;
+	
+	@Override
+	public Invoice findById(Long id) throws Exception {
+		Invoice invoice = invoiceDao.findById(id).orElseThrow(() -> 
+			new Exception("Invoice not found"));
+		return invoice;
+	}
 
 	@Override
 	public Invoice save(Invoice invoice) {

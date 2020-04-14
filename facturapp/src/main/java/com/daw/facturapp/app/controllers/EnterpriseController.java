@@ -648,4 +648,33 @@ public class EnterpriseController {
 		return "redirect:/";
 	}
 	
+	@GetMapping("/invoice/{id}")
+	public String showInvoice(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Invoice invoice = null;
+		try {
+			invoice = invoiceService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.invoice.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		Client client = invoice.getClient();
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, client.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		model.addAttribute("user", user);
+		model.addAttribute("invoice", invoice);
+		model.addAttribute("title", client.getEnterprise().getName());
+		return "enterprise/invoice/show_invoice";
+	}
 }

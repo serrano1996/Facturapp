@@ -30,7 +30,7 @@
 								<td th:text="${invoice.createAt}"></td>
 								<td th:text="${invoice.total} + ' €'"></td>
 								<td>
-									<a th:href="@{/}" class="btn btn-primary"
+									<a th:href="@{/enterprise/invoice/} + ${invoice.id}" class="btn btn-primary"
 										th:utext="#{text.client.invoice.view}"></a>
 								</td>
 							</tr>

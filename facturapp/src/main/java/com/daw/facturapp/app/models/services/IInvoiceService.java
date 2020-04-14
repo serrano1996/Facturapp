@@ -4,6 +4,8 @@ import com.daw.facturapp.app.models.entities.Invoice;
 
 public interface IInvoiceService {
 	
+	public Invoice findById(Long id) throws Exception;
+	
 	public Invoice save(Invoice invoice);
 
 }

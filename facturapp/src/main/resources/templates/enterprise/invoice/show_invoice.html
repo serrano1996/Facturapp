@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+				
+				<table class="table table-striped table-hover table-bordered my-3">
+					<thead>
+						<tr class="bg-info">
+							<th>Datos del cliente</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td th:text="${invoice.client.nif}"></td>
+						</tr>
+						<tr>
+							<td th:text="${invoice.client.name}"></td>
+						</tr>
+					</tbody>
+				</table>
+            	
+            	<table th:if="${not #lists.isEmpty(invoice.items)}"
+					class="table table-striped table-hover table-bordered my-3">
+					<thead>
+						<tr class="bg-info">
+							<th>Producto</th>
+							<th>Precio</th>
+							<th>Cantidad</th>
+							<th>Subtotal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="line: ${invoice.items}">
+							<td th:text="${line.product.longName}"></td>
+							<td th:text="${line.product.price}"></td>
+							<td th:text="${line.quantity}"></td>
+							<td th:text="${line.calculateAmount()}"></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h5 class="float-right">
+					Total <span th:text="${invoice.total} + ' €'"
+						class="badge badge-secondary"></span>
+				</h5>
+            	
+            	<span class="text-muted">Se ha aplicado el 21% de IVA</span>
+            	
+            	<!--  <a th:href="@{'/factura/ver/' + ${factura.id}(format=pdf)}"
+					class="btn btn-danger btn-xs float-right">PDF</a>
+				<a th:href="@{'/factura/ver/' + ${factura.id}(format=xlsx)}"
+					class="btn btn-success btn-xs float-right">XLS</a>-->
+				
+				<hr>
+					
+				<a th:href="@{/}"
+					class="btn btn-danger">PDF</a>
+				<a th:href="@{/}"
+					class="btn btn-success">XLS</a>
+
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
