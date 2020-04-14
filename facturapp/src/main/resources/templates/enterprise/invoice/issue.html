@@ -63,7 +63,10 @@
 					<h5>IVA (21%) <span class="badge badge-warning" id="iva">0</span></h5>
 					<h5>Total <span class="badge badge-secondary" id="total">0</span></h5>
 					<div class="text-right">
-						<button type="submit" class="btn btn-primary">Emitir</button>
+						<button type="submit" class="btn btn-primary"
+							th:text="#{text.invoice.issue.button.issue}"></button>
+						<a th:href="@{/}" class="btn btn-secondary"
+							th:utext="#{text.invoice.issue.button.return}"></a>
 					</div>
 				</form>
 

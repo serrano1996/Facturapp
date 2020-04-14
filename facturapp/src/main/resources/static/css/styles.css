@@ -163,6 +163,11 @@ ul ul a {
     margin: 5px auto;
 }
 
+.invoices {
+	height: 500px;
+  	overflow: scroll;
+}
+
 
 /* ---------------------------------------------------
     MEDIAQUERIES

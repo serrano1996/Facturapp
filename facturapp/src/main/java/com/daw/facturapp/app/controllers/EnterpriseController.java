@@ -321,6 +321,34 @@ public class EnterpriseController {
 		return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
 	}
 	
+	@GetMapping("/client/{id}")
+	public String showClient(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Client client;
+		try {
+			client = clientService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, client.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		model.addAttribute("user", user);
+		model.addAttribute("client", client);
+		model.addAttribute("title", client.getEnterprise().getName());
+		return "enterprise/client/show_client";
+	}
+	
 	@PostMapping("/client/delete")
 	public String deleteClient(@RequestParam("client") Long id,
 			@RequestParam("enterprise") Long enterprise,
@@ -562,7 +590,7 @@ public class EnterpriseController {
 	
 	@PostMapping("/invoice/save")
 	public String saveInvoice(@Valid Invoice invoice, 
-			BindingResult result, Model model,
+			BindingResult result,
 			@RequestParam("client") Long id,
 			@RequestParam(name="item_id[]", required=false) Long[] itemId,
 			@RequestParam(name="quantity[]", required=false) Integer[] quantity, 
@@ -588,13 +616,13 @@ public class EnterpriseController {
 		}
 		
 		if (result.hasErrors()) {
-			//model.addAttribute("error", "Crear Factura");
 			return "redirect:enterprise/costumer/" + client.getId() + "/invoice";
 		}
 
 		if (itemId == null || itemId.length == 0) {
-			flash.addFlashAttribute("error", "Error: La factura NO puede no tener líneas!");
-			return "redirect:enterprise/costumer/" + client.getId() + "/invoice";
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.invoice.alert.error.issue", null, locale));
+			return "redirect:/enterprise/costumer/" + client.getId() + "/invoice";
 		}
 		
 		for (int i = 0; i < itemId.length; i++) {
@@ -609,15 +637,13 @@ public class EnterpriseController {
 			line.setQuantity(quantity[i]);
 			line.setProduct(product);
 			invoice.addItemFactura(line);
-
-			//log.info("ID: " + itemId[i].toString() + ", cantidad: " + cantidad[i].toString());
 		}
 
 		invoiceService.save(invoice);
 		client.getInvoices().add(invoice);
-		//status.setComplete();
 
-		flash.addFlashAttribute("success", "Factura creada con éxito!");
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.invoice.alert.success.issue", null, locale));
 
 		return "redirect:/";
 	}

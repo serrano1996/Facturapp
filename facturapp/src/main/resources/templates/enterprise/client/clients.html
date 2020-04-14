@@ -32,7 +32,7 @@
 							<td class="text-center" th:text="${client.name}"></td>
 							<td class="text-center" th:text="${client.createAt}"></td>
 							<td class="text-center">
-								<button class="btn btn-primary"><i class="fas fa-info-circle"></i></button>
+								<a th:href="@{/enterprise/client/} + ${client.id}" class="btn btn-primary"><i class="fas fa-info-circle"></i></a>
 								<a class="btn btn-primary" 
 									th:href="@{/enterprise/costumer/} + ${client.id} + '/invoice'"><i class="fas fa-file-invoice"></i></a>
 								<button class="btn btn-warning" th:value="${client.id}" name="editCostumer"
