@@ -733,9 +733,10 @@ public class EnterpriseController {
 			ItemInvoice line = new ItemInvoice();
 			line.setQuantity(quantity[i]);
 			line.setProduct(product);
+			line.setPrice(product.getPrice());
 			invoice.addItemFactura(line);
 		}
-
+		
 		invoiceService.save(invoice);
 		client.getInvoices().add(invoice);
 

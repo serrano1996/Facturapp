@@ -43,7 +43,7 @@
 					<tbody>
 						<tr th:each="line: ${invoice.items}">
 							<td th:text="${line.product.longName}"></td>
-							<td th:text="${line.product.price}"></td>
+							<td th:text="${line.price}"></td>
 							<td th:text="${line.quantity}"></td>
 							<td th:text="${line.calculateAmount()}"></td>
 						</tr>

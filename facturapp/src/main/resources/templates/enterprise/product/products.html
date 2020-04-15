@@ -18,7 +18,7 @@
             	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_products'"
             		th:utext="#{text.product.home.add.button}"></a>
             	
-            	<div class="row">
+            	<div class="row mb-2">
             		<div class="card mr-1 col-3" th:each="product: ${products}">
             			<a th:href="@{/enterprise/} + ${enterprise.id} + '/edit_product/' + ${product.id}">
             				<img class="card-img-top" 

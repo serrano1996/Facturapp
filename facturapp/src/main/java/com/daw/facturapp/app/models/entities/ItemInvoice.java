@@ -27,9 +27,10 @@ public class ItemInvoice implements Serializable {
 	@JoinColumn(name = "product_id")
 	private Product product;
 	
+	private Float price;
+	
 	public Double calculateAmount() {
-		return Math.rint((quantity.doubleValue() * product.getPrice())*100)/100;
-		//return quantity.doubleValue() * product.getPrice();
+		return Math.rint((quantity.doubleValue() * price)*100)/100;
 	}
 
 	public Long getId() {
@@ -54,6 +55,14 @@ public class ItemInvoice implements Serializable {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public Float getPrice() {
+		return price;
+	}
+
+	public void setPrice(Float price) {
+		this.price = price;
 	}
 
 	@Override
