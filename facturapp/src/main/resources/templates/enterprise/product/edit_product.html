@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+       	<div id="content">
+       	
+       		<div th:replace="layout/layout :: alert"></div>
+        	
+        	<nav th:replace="layout/layout :: navi"></nav>
+            
+            <div class="container">
+            	<h1 class="text-center text-primary" th:text="#{text.product.add.title}"></h1>
+            	
+            	<form method="post" th:action="@{/enterprise/edit_product}" 
+					th:object="${product}" enctype="multipart/form-data">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="longName" th:utext="#{text.product.add.form.name}"></label> 
+							<input type="text" class="form-control" id="longName" name="longName" 
+								th:field="*{longName}" required>
+							<small class="form-text text-danger"
+								th:if="${#fields.hasErrors('longName')}" th:errors="*{longName}"></small>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="shortName" th:utext="#{text.product.add.form.shortname}"></label> 
+							<input type="text" class="form-control" id="shortName"
+								name="shortName" th:field="*{shortName}" required>
+							<small class="form-text text-danger"
+								th:if="${#fields.hasErrors('shortName')}" th:errors="*{shortName}"></small>
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label for="price" th:utext="#{text.product.add.form.price}"></label> 
+							<input type="number" class="form-control" step="0.01" id="price"
+								name="price" th:field="*{price}" required>
+							<small class="form-text text-danger"
+								th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="img" th:utext="#{text.product.add.form.image}"></label> 
+							<input type="file" class="form-control" id="img" name="img">
+							<small class="form-text text-danger"
+								th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></small>
+						</div>
+					</div>
+					<input type="hidden" name="enterprise" th:value="${enterprise.id}">
+					<input type="hidden" name="product" th:value="${product.id}">
+					<button type="submit" class="btn btn-primary"
+						th:text="#{text.product.add.form.button.submit}"></button>
+					<a class="btn btn-secondary" th:href="@{/}"
+						th:utext="#{text.product.add.form.button.return}"></a>
+				</form>
+            	
+            </div>
+            
+        </div>
+     </div>
+         
+     <footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

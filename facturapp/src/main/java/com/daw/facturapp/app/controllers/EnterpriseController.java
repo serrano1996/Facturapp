@@ -274,7 +274,6 @@ public class EnterpriseController {
 	
 	@PostMapping("/client/save")
 	public String saveClient(@RequestParam("client") Long id,
-			//@RequestParam("enterprise") Long enterprise,
 			@RequestParam("nif") String nif,
 			@RequestParam("name") String name,
 			RedirectAttributes flash,
@@ -526,6 +525,104 @@ public class EnterpriseController {
 		flash.addFlashAttribute("enterprise", enterprise);
 		flash.addFlashAttribute("success", 
 				messageSource.getMessage("text.product.alert.success.create", null, locale));
+		return "redirect:/enterprise/" + enterprise.getId();
+	}
+	
+	@GetMapping("/{id}/edit_product/{product_id}")
+	public String editProduct(@PathVariable Long id, @PathVariable Long product_id,
+			Model model,Locale locale, Authentication auth, 
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		Product product = null;
+		try {
+			product = productService.findById(product_id);
+		} catch (Exception e) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.product.error.not.found", null, locale));
+			e.printStackTrace();
+			return "redirect:/";
+		}
+
+		model.addAttribute("user", user);
+		model.addAttribute("title", enterprise.getName());
+		model.addAttribute("product", product);
+		return "enterprise/product/edit_product";
+	}
+	
+	@PostMapping("/edit_product")
+	public String editProduct(@RequestParam("longName") String longName,
+			@RequestParam("shortName") String shortName,
+			@RequestParam("price") Float price,
+			@RequestParam("img") MultipartFile img,
+			@RequestParam("enterprise") Long enterprise_id,
+			@RequestParam("product") Long product_id,
+			Model model, Locale locale,
+			Authentication auth,
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(enterprise_id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		Product product = null;
+		try {
+			product = productService.findById(product_id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(!productService.isProductBelongsToEnterprise(product, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.product.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+
+		if (!img.isEmpty()) {			
+			try {
+				byte[] image = img.getBytes();
+				product.setImage(image);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		product.setLongName(longName);
+		product.setShortName(shortName);
+		product.setPrice(price);
+		productService.save(product);
+		flash.addFlashAttribute("enterprise", enterprise);
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.product.alert.success.edit", null, locale));
 		return "redirect:/enterprise/" + enterprise.getId();
 	}
 	

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.daw.facturapp.app.models.dao.IProductDao;
+import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.Product;
 
 @Service
@@ -36,6 +37,15 @@ public class ProductServiceImpl implements IProductService {
 	@Override
 	public List<Product> findByName(String term, Long enterprise_id) {
 		return productDao.findByLongNameLikeIgnoreCase(term, enterprise_id);
+	}
+	
+	public boolean isProductBelongsToEnterprise(Product product, Enterprise enterprise) {
+		for(Product p : enterprise.getProducts()) {
+			if(p.getId().equals(product.getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

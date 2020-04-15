@@ -10,6 +10,7 @@ $(document).ready(function() {
 				},
 				success : function(data) {
 					response($.map(data, function(item) {
+						//item.enterprise = null;
 						return {
 							value : item.id,
 							label : item.longName,
