@@ -64,7 +64,7 @@
 				
 				<hr>
 					
-				<a th:href="@{/}"
+				<a th:href="@{'/enterprise/invoice/' + ${invoice.id}(format=pdf)}"
 					class="btn btn-danger">PDF</a>
 				<a th:href="@{/}"
 					class="btn btn-success">XLS</a>
