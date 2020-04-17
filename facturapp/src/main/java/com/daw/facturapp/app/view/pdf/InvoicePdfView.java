@@ -50,6 +50,9 @@ public class InvoicePdfView extends AbstractPdfView {
 		Paragraph enterprise = new Paragraph(invoice.getClient().getEnterprise().getName());
 		enterprise.setAlignment(Element.ALIGN_RIGHT);
 		enterprise.setIndentationRight(52);
+		Paragraph date = new Paragraph(invoice.getCreateAt().toString());
+		date.setAlignment(Element.ALIGN_RIGHT);
+		date.setIndentationRight(52);
 		
 		PdfPTable table = new PdfPTable(1);
 		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.data",  null, locale)));
@@ -102,6 +105,7 @@ public class InvoicePdfView extends AbstractPdfView {
 		document.addTitle("FAC"+ invoice.getId() + "-" + invoice.getCreateAt().toString());
 		document.add(image);
 		document.add(enterprise);
+		document.add(date);
 		document.add(table);
 		document.add(table2);
 		document.add(iva);

@@ -56,18 +56,13 @@
 				</h5>
             	
             	<span class="text-muted" th:text="#{text.invoice.iva}"></span>
-            	
-            	<!--  <a th:href="@{'/factura/ver/' + ${factura.id}(format=pdf)}"
-					class="btn btn-danger btn-xs float-right">PDF</a>
-				<a th:href="@{'/factura/ver/' + ${factura.id}(format=xlsx)}"
-					class="btn btn-success btn-xs float-right">XLS</a>-->
 				
 				<hr>
 					
 				<a th:href="@{'/enterprise/invoice/' + ${invoice.id}(format=pdf)}"
 					class="btn btn-danger" target="_blank">PDF</a>
-				<a th:href="@{/}"
-					class="btn btn-success" target="_blank">XLS</a>
+				<a th:href="@{'/enterprise/invoice/' + ${invoice.id}(format=xlsx)}"
+					class="btn btn-success">XLS</a>
 
             </div>
             
