@@ -16,7 +16,9 @@ import org.springframework.web.servlet.view.document.AbstractPdfView;
 import com.daw.facturapp.app.models.entities.Invoice;
 import com.daw.facturapp.app.models.entities.ItemInvoice;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -42,9 +44,12 @@ public class InvoicePdfView extends AbstractPdfView {
 		
 		byte[] img = invoice.getClient().getEnterprise().getLogo(); 
 		Image image = Image.getInstance(img);
-		image.scalePercent((float) 10);
-		//image.setRotationDegrees(30);
-		image.setIndentationLeft((float) 52);
+		image.scalePercent(10);
+		image.setIndentationLeft(52);
+		
+		Paragraph enterprise = new Paragraph(invoice.getClient().getEnterprise().getName());
+		enterprise.setAlignment(Element.ALIGN_RIGHT);
+		enterprise.setIndentationRight(52);
 		
 		PdfPTable table = new PdfPTable(1);
 		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.data",  null, locale)));
@@ -59,10 +64,22 @@ public class InvoicePdfView extends AbstractPdfView {
 		PdfPTable table2 = new PdfPTable(4);
 		table2.setWidths(new float[] {3.5f, 1, 1, 1});
 		table2.setSpacingAfter(20);
-		table2.addCell("Producto");
-		table2.addCell("Precio");
-		table2.addCell("Cantidad");
-		table2.addCell("Total");
+		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.line.name",  null, locale)));
+		cell.setBackgroundColor(new Color(184, 218, 255));
+		cell.setPadding(8f);
+		table2.addCell(cell);
+		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.line.price",  null, locale)));
+		cell.setBackgroundColor(new Color(184, 218, 255));
+		cell.setPadding(8f);
+		table2.addCell(cell);
+		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.line.quantity",  null, locale)));
+		cell.setBackgroundColor(new Color(184, 218, 255));
+		cell.setPadding(8f);
+		table2.addCell(cell);
+		cell = new PdfPCell(new Phrase(messageSource.getMessage("text.invoice.show.line.subtotal",  null, locale)));
+		cell.setBackgroundColor(new Color(184, 218, 255));
+		cell.setPadding(8f);
+		table2.addCell(cell);
 		
 		for(ItemInvoice item: invoice.getItems()) {
 			table2.addCell(item.getProduct().getLongName());
@@ -73,16 +90,21 @@ public class InvoicePdfView extends AbstractPdfView {
 			table2.addCell(item.calculateAmount().toString());
 		}
 		
-		cell = new PdfPCell(new Phrase("Total: "));
+		cell = new PdfPCell(new Phrase("TOTAL "));
 		cell.setColspan(3);
 		cell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
 		table2.addCell(cell);
-		table2.addCell(invoice.getTotal().toString());
+		table2.addCell(invoice.getTotal().toString().concat(" €"));
+		
+		Paragraph iva = new Paragraph(new Phrase(messageSource.getMessage("text.invoice.iva",  null, locale)));
+		iva.setIndentationLeft(52);
 		
 		document.addTitle("FAC"+ invoice.getId() + "-" + invoice.getCreateAt().toString());
 		document.add(image);
+		document.add(enterprise);
 		document.add(table);
 		document.add(table2);
+		document.add(iva);
 	}
 
 }
