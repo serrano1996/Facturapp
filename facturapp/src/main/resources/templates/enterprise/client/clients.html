@@ -17,6 +17,37 @@
             	
             	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_clients'"
             		th:utext="#{text.client.home.add.button}"></a>
+            		
+            	<form class="form-inline mb-3" th:action="@{/enterprise/client/search}" method="post">
+					<input class="form-control mr-sm-2" type="text" name="client" required
+						th:placeholder="#{text.client.search.form.placeholder}"/>
+					<input type="hidden" name="enterpriseId" th:value="${enterprise.id}" required />
+					<button class="btn btn-outline-success" type="submit" 
+						th:utext="#{text.client.search.form.button}"></button>
+				</form>
+				
+				<div class="row" th:if="${search != null}">
+					<div class="col-3 mb-2" th:if="${!search.isEmpty()}"
+						th:each="c: ${search}">
+						<div class="card">
+						  <div class="card-body">
+						    <h5 class="card-title text-left" th:text="${c.name}"></h5>						    
+						    <h6 class="card-subtitle mb-2 text-muted text-left" th:text="${c.nif}"></h6>
+						    
+						    <a th:href="@{/enterprise/client/} + ${c.id}" class="btn btn-primary"><i class="fas fa-info-circle"></i></a>
+								<a class="btn btn-primary" 
+									th:href="@{/enterprise/costumer/} + ${c.id} + '/invoice'"><i class="fas fa-file-invoice"></i></a>
+								<button class="btn btn-warning" th:value="${c.id}" name="editCostumer"
+									data-toggle="modal" data-target="#exampleModalCenter"><i class="fas fa-user-edit"></i></button>
+								<button class="btn btn-danger" th:value="${c.id}" name="deleteCostumer"
+									data-toggle="modal" data-target="#confirmDelete"><i class="fas fa-trash"></i></button>
+						  </div>
+						</div>
+					</div>
+					<div class="m-3" th:if="${search.isEmpty()}">
+						<h4 th:text="#{text.admin.users.search.not.found}"></h4>
+					</div>
+				</div>
             	
             	<table th:if="${!enterprise.clients.isEmpty()}" class="table table-bordered table-striped">
 					<thead class="thead-dark">

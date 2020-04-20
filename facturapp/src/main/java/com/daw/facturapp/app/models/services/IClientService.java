@@ -1,5 +1,7 @@
 package com.daw.facturapp.app.models.services;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,6 +14,8 @@ public interface IClientService {
 	public Client save(Client client);
 	
 	public Page<Client> findByEnterprise(Long enterprise_id, Pageable pageable);
+	
+	public List<Client> findByNameAndEnterprise(String name, Long enterprise_id);
 	
 	public void delete(Long id);
 	

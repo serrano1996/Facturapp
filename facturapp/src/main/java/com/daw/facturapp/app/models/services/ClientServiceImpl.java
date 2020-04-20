@@ -1,5 +1,7 @@
 package com.daw.facturapp.app.models.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,11 @@ public class ClientServiceImpl implements IClientService {
 	public Page<Client> findByEnterprise(Long enterprise_id, Pageable pageable) {
 		return clientDao.findByEnterprise(enterprise_id, pageable);
 	}
+	
+	@Override
+	public List<Client> findByNameAndEnterprise(String name, Long enterprise_id) {
+		return clientDao.findByEnterpriseAndName(name, enterprise_id);
+	}
 
 	public Client save(Client client) {
 		return clientDao.save(client);
@@ -42,6 +49,12 @@ public class ClientServiceImpl implements IClientService {
 		clientDao.deleteByEnterprise(id);		
 	}
 	
+	/**
+	 * 
+	 * @param client
+	 * @param enterprise
+	 * @return
+	 */
 	public boolean isCostumerBelongsToEnterprise(Client client, Enterprise enterprise) {
 		for(Client c : enterprise.getClients()) {
 			if(c.getId().equals(client.getId())) {

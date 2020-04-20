@@ -206,6 +206,35 @@ public class EnterpriseController {
 		return "enterprise/client/clients";
 	}
 	
+	@PostMapping("client/search")
+	public String searchClient(@RequestParam("client") String name, 
+			@RequestParam("enterpriseId") Long enterpriseId,
+			Locale locale, Authentication auth, 
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(enterpriseId);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		flash.addFlashAttribute("search", 
+				clientService.findByNameAndEnterprise(name, enterprise.getId()));
+		
+		return "redirect:/enterprise/" + enterprise.getId() + "/clients";
+	}
+	
 	@GetMapping("/{id}/add_clients")
 	public String addClient(@PathVariable Long id, Model model,
 			Locale locale, Authentication auth, RedirectAttributes flash) {
@@ -408,6 +437,7 @@ public class EnterpriseController {
 	public @ResponseBody Client loadClient(@PathVariable Long id) throws Exception {
 		Client client = clientService.findById(id);
 		client.setEnterprise(null);
+		client.setInvoices(null);
 		return client;
 	}
 	

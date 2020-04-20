@@ -26,8 +26,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Cascade;
-
 @Entity
 @Table(name="users")
 public class User implements Serializable {
