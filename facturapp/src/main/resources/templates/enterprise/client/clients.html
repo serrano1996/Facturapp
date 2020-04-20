@@ -18,7 +18,8 @@
             	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_clients'"
             		th:utext="#{text.client.home.add.button}"></a>
             		
-            	<form class="form-inline mb-3" th:action="@{/enterprise/client/search}" method="post">
+            	<form class="form-inline mb-3" th:action="@{/enterprise/client/search}" method="post"
+            		th:if="${!enterprise.clients.isEmpty()}">
 					<input class="form-control mr-sm-2" type="text" name="client" required
 						th:placeholder="#{text.client.search.form.placeholder}"/>
 					<input type="hidden" name="enterpriseId" th:value="${enterprise.id}" required />
@@ -45,7 +46,7 @@
 						</div>
 					</div>
 					<div class="m-3" th:if="${search.isEmpty()}">
-						<h4 th:text="#{text.admin.users.search.not.found}"></h4>
+						<h4 th:text="#{text.client.search.not.found}"></h4>
 					</div>
 				</div>
             	

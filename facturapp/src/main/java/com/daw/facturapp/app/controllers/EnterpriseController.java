@@ -483,6 +483,35 @@ public class EnterpriseController {
 		return "enterprise/product/products";
 	}
 	
+	@PostMapping("product/search")
+	public String searchProduct(@RequestParam("product") String name, 
+			@RequestParam("enterpriseId") Long enterpriseId,
+			Locale locale, Authentication auth, 
+			RedirectAttributes flash) {
+		User user = (User) userService.findByUsername(auth.getName());
+
+		Enterprise enterprise = null;
+		try {
+			enterprise = enterpriseService.findById(enterpriseId);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, enterprise)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		flash.addFlashAttribute("search", 
+				productService.findByName(name, enterprise.getId()));
+		
+		return "redirect:/enterprise/" + enterprise.getId() + "/products";
+	}
+	
 	@GetMapping("/{id}/add_products")
 	public String addProduct(@PathVariable Long id, Model model,
 			Locale locale, Authentication auth, RedirectAttributes flash) {

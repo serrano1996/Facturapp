@@ -17,6 +17,29 @@
             	
             	<a class="btn btn-outline-primary my-3" th:href="@{'/enterprise/'} + ${enterprise.id} + '/add_products'"
             		th:utext="#{text.product.home.add.button}"></a>
+            		
+            	<form class="form-inline mb-3" th:action="@{/enterprise/product/search}" method="post">
+					<input class="form-control mr-sm-2" type="text" name="product" required
+						th:placeholder="#{text.product.search.form.placeholder}"/>
+					<input type="hidden" name="enterpriseId" th:value="${enterprise.id}" required />
+					<button class="btn btn-outline-success" type="submit" 
+						th:utext="#{text.product.search.form.button}"></button>
+				</form>
+				
+				<div class="row" th:if="${search != null}">
+					<div class="col-3 mb-2" th:if="${!search.isEmpty()}"
+						th:each="p: ${search}">
+						<div class="card">
+						  <a th:href="@{/enterprise/} + ${enterprise.id} + '/edit_product/' + ${p.id}">
+            				<img class="card-img-top" 
+								th:src="@{/enterprise/product/img/view/} + ${p.id}" th:alt="${p.longName}" />
+						</a>
+						</div>
+					</div>
+					<div class="m-3" th:if="${search.isEmpty()}">
+						<h4 th:text="#{text.product.search.not.found}"></h4>
+					</div>
+				</div>
             	
             	<div class="row mb-2">
             		<div class="card mr-1 col-3" th:each="product: ${products}">
