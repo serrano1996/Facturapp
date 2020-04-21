@@ -16,5 +16,7 @@ public interface IProductService {
 	public Page<Product> findByEnterprise(Long enterprise_id, Pageable pageable);
 	
 	public Product save(Product product);
+	
+	public void delete(Long id);
 
 }

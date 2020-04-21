@@ -98,6 +98,15 @@ public class Enterprise implements Serializable {
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}
+	
+	public void removeProduct(Long id) {
+        Iterator<Product> it = this.products.iterator();
+        while(it.hasNext()) {
+        	if(it.next().getId() == id) {
+        		it.remove();
+        	}
+        }
+    }
 
 	public Long getId() {
 		return id;

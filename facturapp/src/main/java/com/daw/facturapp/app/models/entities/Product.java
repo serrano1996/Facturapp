@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -39,9 +41,9 @@ public class Product implements Serializable {
 	@Column
 	private byte[] image;
 	
-	//@ManyToOne
-	//@JoinColumn(name="enterprise_id")
-	//private Enterprise enterprise;
+	@ManyToOne
+	@JoinColumn(name="enterprise_id")
+	private Enterprise enterprise;
 
 	public Long getId() {
 		return id;
@@ -83,13 +85,13 @@ public class Product implements Serializable {
 		this.image = image;
 	}
 
-	//public Enterprise getEnterprise() {
-	//	return enterprise;
-	//}
+	public Enterprise getEnterprise() {
+		return enterprise;
+	}
 
-	//public void setEnterprise(Enterprise enterprise) {
-	//	this.enterprise = enterprise;
-	//}
+	public void setEnterprise(Enterprise enterprise) {
+		this.enterprise = enterprise;
+	}
 
 	@Override
 	public String toString() {

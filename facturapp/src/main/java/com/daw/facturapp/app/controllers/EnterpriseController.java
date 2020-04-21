@@ -379,28 +379,11 @@ public class EnterpriseController {
 	
 	@PostMapping("/client/delete")
 	public String deleteClient(@RequestParam("client") Long id,
-			@RequestParam("enterprise") Long enterprise,
 			@RequestParam("password") String password,
 			RedirectAttributes flash,
 			Authentication auth,
 			Locale locale) {
 		User user = (User) userService.findByUsername(auth.getName());
-		
-		Enterprise e;
-		try {
-			e = enterpriseService.findById(enterprise);
-		} catch (Exception ex) {
-			flash.addFlashAttribute("error", 
-					messageSource.getMessage("text.enterprise.error.not.found", null, locale));
-			System.out.println(ex.getMessage());
-			return "redirect:/";
-		}
-		
-		if(!enterpriseService.isEnterpriseBelongsToUser(user, e)) {
-			flash.addFlashAttribute("error", 
-					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
-			return "redirect:/";
-		}
 		
 		Client client;
 		try {
@@ -412,7 +395,13 @@ public class EnterpriseController {
 			return "redirect:/";
 		}
 		
-		if(!clientService.isCostumerBelongsToEnterprise(client, e)) {
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, client.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		if(!clientService.isCostumerBelongsToEnterprise(client, client.getEnterprise())) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.enterprise.client.error.not.mismath", null, locale));
 			return "redirect:/";
@@ -422,15 +411,15 @@ public class EnterpriseController {
 		if(!passwordEncoder.matches(password, user.getPassword())) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.user.no.validation", null, locale));
-			return "redirect:/enterprise/" + enterprise + "/clients";
+			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
 		}
 
-		e.removeClient(client.getId());
+		client.getEnterprise().removeClient(client.getId());
 		clientService.delete(client.getId());
 		
 		flash.addFlashAttribute("success", 
 				messageSource.getMessage("text.client.alert.success.delete", null, locale));
-		return "redirect:/enterprise/" + enterprise + "/clients";
+		return "redirect:/";
 	}
 	
 	@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
@@ -708,7 +697,55 @@ public class EnterpriseController {
 	@GetMapping(value = "/load_products/{term}/{enterprise_id}", produces = { "application/json" })
 	public @ResponseBody List<Product> loadProducts(@PathVariable String term,
 			@PathVariable Long enterprise_id) {
-		return productService.findByName(term, enterprise_id);
+		List<Product> products = productService.findByName(term, enterprise_id);
+		for(Product p : products) p.setEnterprise(null);
+		return products;
+	}
+	
+	@PostMapping("/product/delete")
+	public String deleteProduct(@RequestParam("product") Long id,
+			@RequestParam("password") String password,
+			RedirectAttributes flash,
+			Authentication auth,
+			Locale locale) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Product product;
+		try {
+			product = productService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.product.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+		
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, product.getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		// Verificación del borrado.
+		if(!passwordEncoder.matches(password, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.no.validation", null, locale));
+			return "redirect:/enterprise/" + product.getEnterprise().getId() + "/products";
+		}
+		
+		if(productService.isProductBelongsToSomeItemInvoice(product)) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.product.error.delete", null, locale));
+			return "redirect:/enterprise/" + product.getEnterprise().getId() + "/products";
+		}
+		
+		Enterprise e = product.getEnterprise();
+		e.removeProduct(product.getId());
+		productService.delete(product.getId());
+		
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.product.alert.success.delete", null, locale));
+		return "redirect:/enterprise/" + product.getEnterprise().getId() + "/products";
 	}
 	
 	/***********************************************************************/
