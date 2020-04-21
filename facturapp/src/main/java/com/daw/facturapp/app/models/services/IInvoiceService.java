@@ -7,5 +7,7 @@ public interface IInvoiceService {
 	public Invoice findById(Long id) throws Exception;
 	
 	public Invoice save(Invoice invoice);
+	
+	public void delete(Long id);
 
 }

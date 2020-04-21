@@ -51,7 +51,7 @@
 					<input type="hidden" name="enterprise" th:value="${enterprise.id}">
 					<input type="hidden" name="product" th:value="${product.id}">
 					<button type="submit" class="btn btn-primary"
-						th:text="#{text.product.add.form.button.submit}"></button>
+						th:text="#{text.product.edit.form.button.submit}"></button>
 					<button type="button" class="btn btn-danger" th:value="${product.id}" name="deleteProduct"
 						data-toggle="modal" data-target="#confirmDelete"><i class="fas fa-trash"></i></button>
 					<a class="btn btn-secondary" th:href="@{/}"

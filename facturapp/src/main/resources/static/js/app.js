@@ -38,9 +38,14 @@ $(document).ready(function () {
  		});
  	})
  	
- 	 $("button[name='deleteCostumer']").click(function() {
+ 	$("button[name='deleteCostumer']").click(function() {
  		let id = $(this).val();
  		$("#remCId").val(id);
+ 	})
+ 	
+ 	$("button[name='deleteInvoice']").click(function() {
+ 		let id = $(this).val();
+ 		$("#remIId").val(id);
  	})
  	
  	$("button[name='deleteCancel']").click(function() {

@@ -38,6 +38,7 @@ import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.ClientServiceImpl;
 import com.daw.facturapp.app.models.services.EnterpriseServiceImpl;
 import com.daw.facturapp.app.models.services.InvoiceServiceImpl;
+import com.daw.facturapp.app.models.services.ItemInvoiceImpl;
 import com.daw.facturapp.app.models.services.ProductServiceImpl;
 import com.daw.facturapp.app.models.services.UserServiceImpl;
 import com.daw.facturapp.app.utils.paginator.PageRender;
@@ -61,6 +62,9 @@ public class EnterpriseController {
 	
 	@Autowired
 	private InvoiceServiceImpl invoiceService;
+	
+	@Autowired
+	private ItemInvoiceImpl itemInvoiceService;
 	
 	@Autowired
 	private MessageSource messageSource;
@@ -871,4 +875,47 @@ public class EnterpriseController {
 		model.addAttribute("title", client.getEnterprise().getName());
 		return "enterprise/invoice/show_invoice";
 	}
+
+	@PostMapping("/invoice/delete")
+	public String deleteInvoice(@RequestParam("invoice") Long id,
+			@RequestParam("password") String password,
+			RedirectAttributes flash,
+			Authentication auth,
+			Locale locale) {
+		User user = (User) userService.findByUsername(auth.getName());
+		
+		Invoice invoice;
+		try {
+			invoice = invoiceService.findById(id);
+		} catch (Exception ex) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.invoice.error.not.found", null, locale));
+			System.out.println(ex.getMessage());
+			return "redirect:/";
+		}
+
+		if(!enterpriseService.isEnterpriseBelongsToUser(user, invoice.getClient().getEnterprise())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.enterprise.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		
+		// Verificación del borrado.
+		if(!passwordEncoder.matches(password, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.user.no.validation", null, locale));
+			return "redirect:/enterprise/client/" + invoice.getClient().getId();
+		}
+
+		Client client = invoice.getClient();
+		
+		itemInvoiceService.deleteByInvoice(invoice.getId());
+		invoiceService.delete(invoice.getId());
+		
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.invoice.alert.success.delete", null, locale));
+		return "redirect:/enterprise/client/" + client.getId();
+	}
+
 }

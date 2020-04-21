@@ -24,4 +24,9 @@ public class InvoiceServiceImpl implements IInvoiceService {
 		return invoiceDao.save(invoice);
 	}
 
+	@Override
+	public void delete(Long id) {
+		invoiceDao.deleteById(id);
+	}
+
 }
