@@ -137,9 +137,11 @@ public class EnterpriseController {
 		return "redirect:/enterprise/" + enterprise.getId();
 	}
 	
-	@PostMapping("/delete/{id}")
-	public String delete(@PathVariable Long id, Model model, 
-		Locale locale, Authentication auth, RedirectAttributes flash) throws Exception {
+	@PostMapping("/delete")
+	public String delete(@RequestParam("enterprise") Long id, 
+		@RequestParam("password") String password,
+		Locale locale, Authentication auth, 
+		RedirectAttributes flash) {
 		User user = (User) userService.findByUsername(auth.getName());
 		
 		Enterprise enterprise = null;
@@ -158,6 +160,18 @@ public class EnterpriseController {
 			return "redirect:/";
 		}
 		
+		// Verificación del borrado.
+		if(!passwordEncoder.matches(password, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.no.validation", null, locale));
+			return "redirect:/enterprise/" + enterprise.getId();
+		}
+		
+		if(!enterprise.getClients().isEmpty() || !enterprise.getProducts().isEmpty()) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.enterprise.error.delete", null, locale));
+			return "redirect:/enterprise/" + enterprise.getId();
+		}
 		
 		clientService.deletebyEnterprise(enterprise.getId());
 		user.removeEnterprise(enterprise.getName());

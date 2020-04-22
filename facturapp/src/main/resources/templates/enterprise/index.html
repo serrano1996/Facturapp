@@ -184,12 +184,38 @@
 		        <hr>
 		        <h4 class="text-danger" th:utext="#{text.enterprise.home.modal.setting.danger.title}"></h4>
 		        <hr>
-		        <form th:action="@{/enterprise/delete/} + ${enterprise.id}" method="post">
-		        	<div class="text-right">
-		        		<button class="btn btn-danger" type="submit"
-		        			onclick="return confirm('Are you sure you want to delete?');"
-		        			th:utext="#{text.enterprise.home.modal.setting.button.delete}"></button>
-		        	</div>
+		        <div class="text-right">
+		        	<button class="btn btn-danger" th:value="${enterprise.id}" name="deleteEnterprise"
+						data-toggle="modal" data-target="#confirmDelete"
+						th:utext="#{text.enterprise.home.modal.setting.button.delete}"></button>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title text-danger" id="exampleModalLongTitle"
+		        	th:utext="#{text.enterprise.delete.title}"></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body text-center">
+		      	<h5 th:text="#{text.enterprise.delete.warning}"></h5>
+		        <form th:action="@{/enterprise/delete}" method="post">
+					<input type="hidden" id="remEId" name="enterprise" required>
+					<div class="form-group">
+						<input type="password" name="password" class="form-control"
+							th:placeholder="#{text.enterprise.delete.confirm}" required>
+					</div>
+					<button type="button" class="btn btn-primary" name="deleteCancel"
+						th:text="#{text.client.delete.confirm.button.cancel}"></button>
+		        	<button type="submit" class="btn btn-danger"
+		        		th:text="#{text.client.delete.confirm.button.delete}"></button>
 		        </form>
 		      </div>
 		    </div>

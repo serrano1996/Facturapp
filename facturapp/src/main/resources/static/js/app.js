@@ -48,6 +48,11 @@ $(document).ready(function () {
  		$("#remIId").val(id);
  	})
  	
+ 	$("button[name='deleteEnterprise']").click(function() {
+ 		let id = $(this).val();
+ 		$("#remEId").val(id);
+ 	})
+ 	
  	$("button[name='deleteCancel']").click(function() {
  		$('#confirmDelete').modal('hide')
  	})
