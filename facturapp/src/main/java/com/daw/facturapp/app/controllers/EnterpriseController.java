@@ -417,13 +417,20 @@ public class EnterpriseController {
 					messageSource.getMessage("text.user.no.validation", null, locale));
 			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
 		}
-
+		
+		if(!client.getInvoices().isEmpty()) {
+			flash.addFlashAttribute("error", 
+					messageSource.getMessage("text.client.error.delete", null, locale));
+			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
+		}
+		
+		Enterprise e = client.getEnterprise();
 		client.getEnterprise().removeClient(client.getId());
 		clientService.delete(client.getId());
 		
 		flash.addFlashAttribute("success", 
 				messageSource.getMessage("text.client.alert.success.delete", null, locale));
-		return "redirect:/";
+		return "redirect:/enterprise/" + e.getId() + "/clients";
 	}
 	
 	@GetMapping(value = "/load_client/{id}", produces = { "application/json" })
