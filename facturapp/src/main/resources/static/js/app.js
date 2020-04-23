@@ -57,4 +57,8 @@ $(document).ready(function () {
  		$('#confirmDelete').modal('hide')
  	})
  	
+ 	$("button[name='cancel']").click(function() {
+ 		$('#changePassword').modal('hide')
+ 	})
+ 	
 });

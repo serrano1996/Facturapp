@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,6 +40,9 @@ public class UserController {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
 	
 	@GetMapping("/{id}/profile")
 	public String user(@PathVariable Long id, Model model,
@@ -91,6 +95,36 @@ public class UserController {
 		status.setComplete();
 		model.addAttribute("user", user);
 		flash.addFlashAttribute("success", messageSource.getMessage("text.user.alert.success.edit", null, locale));
+		model.addAttribute("title", user.getUsername());
+		return "redirect:/user/" + user.getId() + "/profile";
+	}
+	
+	@PostMapping("/changePassword")
+	public String changePassword(Model model, Authentication auth,
+			@RequestParam("oldPassword") String oldPassword,
+			@RequestParam("newPassword") String newPassword,
+			SessionStatus status,
+			RedirectAttributes flash,
+			Locale locale) throws Exception {
+		User user = userService.findByUsername(auth.getName());
+		
+		if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.change.password.wrong", null, locale));
+			return "redirect:/user/" + user.getId() + "/profile";
+		}
+		
+		if(oldPassword.equals("") || newPassword.equals("")) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.change.password.wrong", null, locale));
+			return "redirect:/user/" + user.getId() + "/profile";
+		}
+		
+		user.setConfirmPassword(newPassword);
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userService.save(user, 1);
+		status.setComplete();
+		flash.addFlashAttribute("success", messageSource.getMessage("text.user.alert.success.change.password", null, locale));
 		model.addAttribute("title", user.getUsername());
 		return "redirect:/user/" + user.getId() + "/profile";
 	}
