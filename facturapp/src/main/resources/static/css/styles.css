@@ -118,6 +118,13 @@ ul ul a {
     background: #6d7fcc;
 }
 
+.img-rounded {
+	height: 2rem;
+	width: 2rem;
+	border: 2px solid white;
+	border-radius: 50%;
+}
+
 
 /* ---------------------------------------------------
     CONTENT STYLE

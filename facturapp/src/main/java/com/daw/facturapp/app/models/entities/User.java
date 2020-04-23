@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -83,6 +84,10 @@ public class User implements Serializable {
 	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.PERSIST)
 	@JoinColumn(name="user_id")
 	private Set<Enterprise> enterprises;
+	
+	@Lob
+	@Column
+	private byte[] image;
 	
 	public User() {
 		super();
@@ -198,6 +203,14 @@ public class User implements Serializable {
 
 	public void setEnterprises(Set<Enterprise> enterprises) {
 		this.enterprises = enterprises;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 	@Override

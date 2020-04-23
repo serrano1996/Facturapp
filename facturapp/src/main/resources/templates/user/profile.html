@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<header th:replace="layout/layout :: header"></header>
+		<div id="content">
+
+			<div th:replace="layout/layout :: alert"></div>
+
+			<nav th:replace="layout/layout :: navi"></nav>
+
+			<div class="container">
+				<h1 class="text-center text-primary" th:text="#{text.profile.title}"></h1>
+				
+				<form th:action="@{/user/save}" method="post"
+					th:object="${user}" enctype="multipart/form-data">
+				  <div class="form-row">
+				    <div class="form-group col-md-6">
+				      <label for="name" th:text="#{text.profile.form.field.name}"></label>
+				      <input type="text" class="form-control" id="name"
+				      	name="name" th:field="*{name}">
+				    </div>
+				    <div class="form-group col-md-6">
+				      <label for="lastname" th:text="#{text.profile.form.field.lastname}"></label>
+				      <input type="text" class="form-control" id="lastname"
+				      	name="lastname" th:field="*{lastname}">
+				    </div>
+				  </div>
+				  <div class="form-row">
+				    <div class="form-group col-md-6">
+				      <label for="email" th:text="#{text.profile.form.field.email}"></label>
+				      <input type="email" class="form-control" id="email"
+				      	name="email" th:field="*{email}">
+				    </div>
+				    <div class="form-group col-md-6">
+						<label for="photo" th:text="#{text.profile.form.field.image}"></label> 
+						<input type="file" class="form-control" id="photo" name="photo">
+					</div>
+				  </div>
+				  <div class="form-row">
+				  	<div class="form-group col-md-3" th:if="${user.image != null}">
+						<img th:src="@{/user/img/} + ${user.id}" class="w-50">
+					</div>
+				  </div>
+				  <button type="submit" class="btn btn-primary" th:text="#{text.profile.form.button.save}"></button>
+				  <a class="btn btn-secondary" th:href="@{/}"
+						th:utext="#{text.profile.form.button.return}"></a>
+				</form>
+				
+			</div>
+
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

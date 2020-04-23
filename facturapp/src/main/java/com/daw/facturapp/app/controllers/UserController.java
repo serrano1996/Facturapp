@@ -3,6 +3,8 @@ package com.daw.facturapp.app.controllers;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -35,6 +39,61 @@ public class UserController {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@GetMapping("/{id}/profile")
+	public String user(@PathVariable Long id, Model model,
+			Locale locale, Authentication auth,
+			RedirectAttributes flash) {
+		User user = userService.findById(id);
+		
+		if(user == null) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.enterprise.error.not.found", null, locale));
+			return "redirect:/";
+		}
+		
+		if(!user.getUsername().equals(auth.getName())) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		model.addAttribute("title", user.getUsername());
+		model.addAttribute("user", user);
+		return "user/profile";
+	}
+	
+	@PostMapping("/save")
+	public String save(Model model, Authentication auth,
+			@RequestParam("name") String name,
+			@RequestParam("lastname") String lastname,
+			@RequestParam("email") String email,
+			@RequestParam("photo") MultipartFile photo,
+			SessionStatus status,
+			RedirectAttributes flash,
+			Locale locale) throws Exception {
+		User user = userService.findByUsername(auth.getName());
+		
+		if (!photo.isEmpty()) {			
+			try {
+				byte[] img = photo.getBytes();
+				user.setImage(img);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		user.setName(name);
+		user.setLastname(lastname);
+		user.setEmail(email);
+		user.setConfirmPassword(user.getPassword());
+		userService.save(user, 1);
+		status.setComplete();
+		model.addAttribute("user", user);
+		flash.addFlashAttribute("success", messageSource.getMessage("text.user.alert.success.edit", null, locale));
+		model.addAttribute("title", user.getUsername());
+		return "redirect:/user/" + user.getId() + "/profile";
+	}
 	
 	@GetMapping("/add_business")
 	public String addBusiness(Model model, Locale locale, Authentication auth) {
@@ -77,4 +136,24 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	@GetMapping("/img/{id}")
+	public void view(@PathVariable Long id, HttpServletResponse response) throws ServletException, 
+		IOException {
+		User user = null;
+		
+		try {
+			user = userService.findById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(user.getImage() != null) {
+			response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+			response.getOutputStream().write(user.getImage());
+			response.getOutputStream().close();
+		} else {
+			response.getOutputStream().close();
+		}
+	}
+	
 }

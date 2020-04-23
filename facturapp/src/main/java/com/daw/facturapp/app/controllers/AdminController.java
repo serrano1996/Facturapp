@@ -109,7 +109,9 @@ public class AdminController {
 	
 	@GetMapping(value = "/load_user/{id}", produces = { "application/json" })
 	public @ResponseBody User loadUser(@PathVariable Long id) {
-		return userService.findById(id);
+		User user = userService.findById(id);
+		user.setEnterprises(null);
+		return user;
 	}
 
 }
