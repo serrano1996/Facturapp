@@ -44,7 +44,7 @@
 				  	<div class="form-group col-md-3 text-center" th:if="${user.image != null}">
 						<img th:src="@{/user/img/} + ${user.id}" class="w-50">
 					</div>
-					<div class="form-group col text-right" th:if="${user.image != null}">
+					<div class="form-group col text-right">
 						<button type="button" class="btn btn-primary" name="changePassword"
 							data-toggle="modal" data-target="#changePassword"
 							th:text="#{text.profile.form.button.change.password}"></button>
@@ -54,6 +54,8 @@
 				  <a class="btn btn-secondary" th:href="@{/}"
 						th:utext="#{text.profile.form.button.return}"></a>
 				</form>
+					<button type="submit" class="btn btn-danger mt-2"
+						data-toggle="modal" data-target="#confirmDelete"><i class="fas fa-trash"></i></button>
 			</div>
 		</div>
 	</div>
@@ -82,6 +84,34 @@
 						th:text="#{text.client.delete.confirm.button.cancel}"></button>
 		        	<button type="submit" class="btn btn-warning"
 		        		th:text="#{text.profile.form.button.change.password.modal.button}"></button>
+		        </form>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title text-danger" id="exampleModalLongTitle"
+		        	th:utext="#{text.profile.delete.title}"></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body text-center">
+		      	<h5 th:text="#{text.profile.delete.warning}"></h5>
+		        <form th:action="@{/user/delete}" method="post">
+					<input type="hidden" name="user" th:value="${user.id}">
+					<div class="form-group">
+						<input type="password" name="password" class="form-control"
+							th:placeholder="#{text.enterprise.delete.confirm}" required>
+					</div>
+					<button type="button" class="btn btn-primary" name="deleteCancel"
+						th:text="#{text.client.delete.confirm.button.cancel}"></button>
+		        	<button type="submit" class="btn btn-danger"
+		        		th:text="#{text.client.delete.confirm.button.delete}"></button>
 		        </form>
 		      </div>
 		    </div>

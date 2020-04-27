@@ -21,4 +21,6 @@ public interface IUserService {
 	
 	public List<User> findByUsernameLike(String username);
 	
+	public void deleteById(Long id);
+	
 }

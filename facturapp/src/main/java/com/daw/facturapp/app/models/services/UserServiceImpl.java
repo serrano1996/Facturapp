@@ -141,4 +141,9 @@ public class UserServiceImpl implements IUserService {
 		return user;
 	}
 
+	@Override
+	public void deleteById(Long id) {
+		userDao.deleteById(id);	
+	}
+
 }

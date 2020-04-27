@@ -170,6 +170,35 @@ public class UserController {
 		return "redirect:/";
 	}
 
+	@PostMapping("/delete")
+	public String deleteUser(@RequestParam("user") Long id,
+			@RequestParam("password") String password,
+			Locale locale, Authentication auth,
+			RedirectAttributes flash) {
+		User user = userService.findById(id);
+		
+		if(!user.getUsername().equals(auth.getName())) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.error.not.mismath", null, locale));
+			return "redirect:/";
+		}
+		
+		if(!user.getEnterprises().isEmpty()) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.error.delete", null, locale));
+			return "redirect:/";
+		}
+		
+		if(!passwordEncoder.matches(password, user.getPassword())) {
+			flash.addFlashAttribute("error", 
+				messageSource.getMessage("text.user.no.validation", null, locale));
+			return "redirect:/";
+		}
+		
+		userService.deleteById(id);
+		return "redirect:/";
+	}
+	
 	@GetMapping("/img/{id}")
 	public void view(@PathVariable Long id, HttpServletResponse response) throws ServletException, 
 		IOException {
