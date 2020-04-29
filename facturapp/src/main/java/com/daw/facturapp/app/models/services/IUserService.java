@@ -19,6 +19,8 @@ public interface IUserService {
 	
 	public User findByUsername(String username);
 	
+	public User findByEmail(String email);
+	
 	public List<User> findByUsernameLike(String username);
 	
 	public void deleteById(Long id);

@@ -43,6 +43,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(resources).permitAll()
 			// Cualquiera puede acceder a la página inicio y al registro.
 			.antMatchers("/", "/index", "/registry").permitAll()
+			.antMatchers("/confirm-account").permitAll()
 			.antMatchers("/admin", "/admin/*").access("hasRole('ADMIN')")
 				// Todas las demás páginas, requieren autenticacion.
 				.anyRequest().authenticated()

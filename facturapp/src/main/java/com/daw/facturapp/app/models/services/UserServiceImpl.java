@@ -146,4 +146,11 @@ public class UserServiceImpl implements IUserService {
 		userDao.deleteById(id);	
 	}
 
+	@Override
+	public User findByEmail(String email) {
+		User user = userDao.findByEmail(email).orElseThrow(() ->
+				new UsernameNotFoundException("Usuario desconocido"));
+		return user;
+	}
+
 }
