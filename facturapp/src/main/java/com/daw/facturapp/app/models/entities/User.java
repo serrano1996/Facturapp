@@ -89,6 +89,9 @@ public class User implements Serializable {
 	@Column
 	private byte[] image;
 	
+	@Column(name="verified", columnDefinition="TINYINT(1)")
+	private boolean isVerified;
+	
 	public User() {
 		super();
 		this.roles = new HashSet<Role>();
@@ -211,6 +214,14 @@ public class User implements Serializable {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+	public void setVerified(boolean isVerified) {
+		this.isVerified = isVerified;
 	}
 
 	@Override

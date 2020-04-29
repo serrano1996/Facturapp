@@ -58,14 +58,14 @@ public class AuthController {
 		
 		model.addAttribute("title", messageSource.getMessage("text.login.title", null, locale));
 		
-		return "/auth/login";
+		return "auth/login";
 	}
 	
 	@GetMapping("/registry")
 	public String registry(Model model, Locale locale) {
 		model.addAttribute("user", new User());
 		model.addAttribute("title", messageSource.getMessage("text.registry.title", null, locale));
-		return "/auth/registry";
+		return "auth/registry";
 	}
 	
 	@PostMapping("/registry")
