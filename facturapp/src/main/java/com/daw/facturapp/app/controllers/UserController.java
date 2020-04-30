@@ -23,6 +23,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.daw.facturapp.app.models.dao.IUserVerifiedDao;
 import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.User;
 import com.daw.facturapp.app.models.services.EnterpriseServiceImpl;
@@ -42,7 +43,10 @@ public class UserController {
 	private MessageSource messageSource;
 	
 	@Autowired
-	BCryptPasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private IUserVerifiedDao userVerifiedDao;
 	
 	@GetMapping("/{id}/profile")
 	public String user(@PathVariable Long id, Model model,
@@ -195,6 +199,7 @@ public class UserController {
 			return "redirect:/";
 		}
 		
+		userVerifiedDao.deleteByUser(id);
 		userService.deleteById(id);
 		return "redirect:/";
 	}
