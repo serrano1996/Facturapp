@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,7 +50,7 @@ public class AuthController {
 		// Si ya se había iniciado sesión.
 		if(principal != null) {
 			flash.addFlashAttribute("info", 
-					messageSource.getMessage("text.alert.info.user.already.loggedin", null, locale));
+					messageSource.getMessage("text.login.alert.info.user.already.loggedin", null, locale));
 			return "redirect:/";
 		}
 		
@@ -109,22 +110,37 @@ public class AuthController {
 			return "/auth/registry";
 		}
 		
-		flash.addFlashAttribute("success", messageSource.getMessage("text.login.alert.success.user.record", null, locale));
+		flash.addFlashAttribute("success", 
+				messageSource.getMessage("text.login.alert.success.user.record", null, locale));
 		
 		return "redirect:/";
 	}
 	
+	@GetMapping("/resend-confirmation")
+	public String resendConfirmation(Authentication auth) {
+		User user = (User) userService.findByUsername(auth.getName());
+		UserVerified verified = userVerifiedDao.findByUser(user.getId());
+		SimpleMailMessage mail = new SimpleMailMessage();
+		mail.setTo(user.getEmail());
+		mail.setSubject("Complete your registration!");
+		mail.setFrom("facturapp.spring@gmail.com");
+		mail.setText("To confirm your account, please click here: " + 
+				"http://localhost:8080/confirm-account?token=" + verified.getToken());
+		emailSenderService.sendMail(mail);
+		return "redirect:/";
+	}
+	
 	@GetMapping("/confirm-account")
-	public String confirmUserAccount(Model model, 
-			@RequestParam("token") String token,
-			RedirectAttributes flash) throws Exception {
+	public String confirmUserAccount(@RequestParam("token") String token,
+			RedirectAttributes flash, Locale locale) throws Exception {
 		UserVerified verified = userVerifiedDao.findByToken(token);
 		if(verified != null) {
 			User user = userService.findByEmail(verified.getUser().getEmail());
 			user.setVerified(true);
 			user.setConfirmPassword(user.getPassword());
 			userService.save(user, 1);
-			flash.addFlashAttribute("success", "usuario verificado");
+			flash.addFlashAttribute("success", 
+					messageSource.getMessage("text.user.alert.verified", null, locale));
 			return "redirect:/";
 		}
 		return "redirect:/";

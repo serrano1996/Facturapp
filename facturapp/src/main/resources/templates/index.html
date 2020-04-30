@@ -24,11 +24,20 @@
             			th:text="#{text.home.header.title.singup.link}"></a>
             	</div>
             	
+            	<div sec:authorize="isAuthenticated()">
+            		<div class="alert alert-primary" role="alert"
+            			th:if="${!user.isVerified()}">
+					  	<p th:text="#{text.user.alert.verification}"></p>
+						<a th:href="@{/resend-confirmation}" class="btn btn-warning" th:text="#{text.user.alert.verification.resend}"></a>
+					</div>
+            	</div>
+            	
             	<h1 class="text-center text-primary mb-2" sec:authorize="hasRole('ROLE_USER')"
+            		th:if="${user.isVerified()}"
             		th:text="#{text.user.home.header.title}"></h1>
-            	<a class="btn btn-outline-primary my-3" th:href="@{'/user/add_business'}" sec:authorize="hasRole('ROLE_USER')"
+            	<a class="btn btn-outline-primary my-3" th:if="${user.isVerified()}" th:href="@{'/user/add_business'}" sec:authorize="hasRole('ROLE_USER')"
             		th:utext="#{text.user.home.button}"></a>
-            	<div class="row" sec:authorize="hasRole('ROLE_USER')">
+            	<div class="row" sec:authorize="hasRole('ROLE_USER')" th:if="${user.isVerified()}">
 	            	<div class="col-sm-12 col-md-6 col-lg-3 mb-2" th:if="${!user.enterprises.isEmpty()}" th:each="enterprise: ${user.enterprises}">
 		            	<div class="card mr-1">
 							<a th:href="@{/enterprise/} + ${enterprise.id}"><img class="card-img-top" 

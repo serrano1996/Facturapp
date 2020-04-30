@@ -12,6 +12,10 @@ public interface IUserVerifiedDao extends CrudRepository<UserVerified, Long> {
 
 	public UserVerified findByToken(String token);
 	
+	@Query(value="SELECT * FROM users_verified WHERE user_id=?1", 
+			nativeQuery=true)
+	public UserVerified findByUser(Long user_id);
+	
 	@Modifying
 	@Transactional
 	@Query(value="DELETE FROM users_verified WHERE user_id=?1", 
