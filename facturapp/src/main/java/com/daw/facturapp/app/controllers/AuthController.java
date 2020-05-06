@@ -88,7 +88,7 @@ public class AuthController {
 		if(result.hasErrors()) {
 			model.addAttribute("title", messageSource.getMessage("text.registry.title", null, locale));
 			model.addAttribute("user", user);
-			return "/auth/registry";
+			return "auth/registry";
 		}
 		
 		user.setVerified(false);
@@ -107,7 +107,7 @@ public class AuthController {
 		} catch (Exception e) {
 			model.addAttribute("error", e.getMessage());
 			System.out.println(e.getMessage());
-			return "/auth/registry";
+			return "auth/registry";
 		}
 		
 		flash.addFlashAttribute("success", 

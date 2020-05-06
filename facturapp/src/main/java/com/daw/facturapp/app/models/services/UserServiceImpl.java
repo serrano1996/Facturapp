@@ -148,8 +148,7 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public User findByEmail(String email) {
-		User user = userDao.findByEmail(email).orElseThrow(() ->
-				new UsernameNotFoundException("Usuario desconocido"));
+		User user = userDao.findByEmail(email).orElse(null);
 		return user;
 	}
 

@@ -27,6 +27,8 @@
 											class="btn btn-large btn-primary btn-block" th:value="#{text.login.form.button.submit}" />
 									</div>
 								</form>
+								<a class="text-primary" th:href="@{/reset/email}" th:text="#{text.login.reset.password}"></a>
+								<hr>
 								<a class="text-primary" th:href="@{/registry}" th:text="#{text.login.signup.info}"></a>
 								<hr>
 								<a class="btn btn-primary mb-2" th:href="@{/}" th:utext="#{text.login.button.return}"></a>

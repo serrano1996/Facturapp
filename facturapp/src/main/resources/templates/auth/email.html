@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="layout/layout :: head"></head>
+<meta charset="UTF-8" />
+<body>
+	<div class="wrapper">
+		<div id="content">
+			<div th:replace="layout/layout :: alert"></div>
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-sm-4">
+						<div class="card">
+							<div class="card-header text-center" th:text="#{text.reset.password.title}"></div>
+							<div class="card-body">
+								<form th:action="@{/reset/email-form}" method="post">
+									<div class="form-group">
+										<label for="email" th:text="#{text.reset.password.confirm.email}"></label>
+										<input type="email" name="email" id="email" class="form-control" required />
+									</div>
+									<button type="submit" class="btn btn-warning mb-2" th:text="#{text.reset.password.confirm.email.button}"></button>
+								</form>
+								<a class="btn btn-primary mb-2" th:href="@{/}" th:utext="#{text.login.button.return}"></a>
+								<span class="ml-3 mr-2" th:utext="#{text.login.label.language}"></span>
+								<a class="btn btn-secondary" th:href="@{/locale(lang=es_ES)}">ES</a>
+								<a class="btn btn-secondary" th:href="@{/locale(lang=en_US)}">EN</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
