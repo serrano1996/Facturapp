@@ -23,6 +23,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.daw.facturapp.app.models.dao.IResetPasswordDao;
 import com.daw.facturapp.app.models.dao.IUserVerifiedDao;
 import com.daw.facturapp.app.models.entities.Enterprise;
 import com.daw.facturapp.app.models.entities.User;
@@ -47,6 +48,9 @@ public class UserController {
 	
 	@Autowired
 	private IUserVerifiedDao userVerifiedDao;
+	
+	@Autowired
+	private IResetPasswordDao resetPasswordDao;
 	
 	@GetMapping("/{id}/profile")
 	public String user(@PathVariable Long id, Model model,
@@ -200,6 +204,7 @@ public class UserController {
 		}
 		
 		userVerifiedDao.deleteByUser(id);
+		resetPasswordDao.deleteByUser(id);
 		userService.deleteById(id);
 		return "redirect:/";
 	}
