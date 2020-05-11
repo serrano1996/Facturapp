@@ -18,19 +18,46 @@
             	<form th:action="@{/enterprise/add_client}" method="post"
             		th:object="${client}">
             		<input type="hidden" name="enterprise" th:value="${enterprise.id}">
-				 	<div class="form-group">
-				    	<label for="nif" th:text="#{text.client.add.form.nif}"></label>
-				    	<input type="text" class="form-control" id="nif" name="nif" required
-				    		th:field="*{nif}">
-				    	<small class="form-text text-danger"
-									th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></small>
+            		<div class="form-row">
+					 	<div class="form-group col-md-6">
+					    	<label for="nif" th:text="#{text.client.add.form.nif}"></label>
+					    	<input type="text" class="form-control" id="nif" name="nif" required
+					    		th:field="*{nif}">
+					    	<small class="form-text text-danger"
+										th:if="${#fields.hasErrors('nif')}" th:errors="*{nif}"></small>
+					  	</div>
+					 	<div class="form-group col-md-6">
+						    <label for="name" th:text="#{text.client.add.form.name}"></label>
+						    <input type="text" class="form-control" id="name" name="name" required
+						    	th:field="*{name}">
+						    <small class="form-text text-danger"
+										th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+					  	</div>
 				  	</div>
-				 	<div class="form-group">
-					    <label for="name" th:text="#{text.client.add.form.name}"></label>
-					    <input type="text" class="form-control" id="name" name="name" required
-					    	th:field="*{name}">
-					    <small class="form-text text-danger"
-									th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+				  	<div class="form-row">
+					 	<div class="form-group col-md-6">
+					    	<label for="address" th:text="#{text.client.add.form.address}"></label>
+					    	<input type="text" class="form-control" id="address" name="address" required
+					    		th:field="*{address}">
+					    	<small class="form-text text-danger"
+										th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></small>
+					  	</div>
+					 	<div class="form-group col-md-6">
+						    <label for="email" th:text="#{text.client.add.form.email}"></label>
+						    <input type="email" class="form-control" id="email" name="email" required
+						    	th:field="*{email}">
+						    <small class="form-text text-danger"
+										th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+					  	</div>
+				  	</div>
+				  	<div class="form-row">
+					 	<div class="form-group col-md-6">
+					    	<label for="phone" th:text="#{text.client.add.form.phone}"></label>
+					    	<input type="text" class="form-control" id="phone" name="phone" required
+					    		th:field="*{phone}">
+					    	<small class="form-text text-danger"
+										th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+					  	</div>
 				  	</div>
 				  	<button type="submit" class="btn btn-primary"
 						th:text="#{text.client.add.form.button.submit}"></button>

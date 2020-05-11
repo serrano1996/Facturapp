@@ -34,6 +34,9 @@ $(document).ready(function () {
  				$("#client").val(res.id);
  				$("#nif").val(res.nif);
  				$("#name").val(res.name);
+ 				$("#email").val(res.email);
+ 				$("#address").val(res.address);
+ 				$("#phone").val(res.phone);
  			}
  		});
  	})

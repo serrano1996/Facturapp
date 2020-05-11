@@ -323,6 +323,9 @@ public class EnterpriseController {
 	public String saveClient(@RequestParam("client") Long id,
 			@RequestParam("nif") String nif,
 			@RequestParam("name") String name,
+			@RequestParam("address") String address,
+			@RequestParam("email") String email,
+			@RequestParam("phone") String phone,
 			RedirectAttributes flash,
 			Authentication auth,
 			Locale locale)  {
@@ -353,7 +356,9 @@ public class EnterpriseController {
 		}
 		
 		// Verificación de campos vacios.
-		if(nif.equals("") || name.equals("")) {
+		if(nif.equals("") || name.equals("") || 
+				address.equals("") || email.equals("") ||
+				phone.equals("")) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.client.alert.error.edit", null, locale));
 			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";
@@ -361,6 +366,9 @@ public class EnterpriseController {
 
 		client.setNif(nif);
 		client.setName(name);
+		client.setAddress(address);
+		client.setEmail(email);
+		client.setPhone(phone);
 		clientService.save(client);
 		flash.addFlashAttribute("success", 
 				messageSource.getMessage("text.client.alert.success.edit", null, locale));

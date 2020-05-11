@@ -20,6 +20,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Entity
@@ -43,6 +44,16 @@ public class Client implements Serializable {
 	@Column(name="created_at")
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
+	
+	@Column
+	@Email
+	private String email;
+	
+	@Column
+	private String phone;
+	
+	@Column
+	private String address;
 	
 	@ManyToOne
 	@JoinColumn(name="enterprise_id")
@@ -108,52 +119,35 @@ public class Client implements Serializable {
 		this.invoices = invoices;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	@Override
 	public String toString() {
-		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt=" + createAt + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((nif == null) ? 0 : nif.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Client other = (Client) obj;
-		if (createAt == null) {
-			if (other.createAt != null)
-				return false;
-		} else if (!createAt.equals(other.createAt))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (nif == null) {
-			if (other.nif != null)
-				return false;
-		} else if (!nif.equals(other.nif))
-			return false;
-		return true;
+		return "Client [id=" + id + ", nif=" + nif + ", name=" + name + ", createAt=" + createAt + ", email=" + email
+				+ ", phone=" + phone + ", address=" + address + ", enterprise=" + enterprise + ", invoices=" + invoices
+				+ "]";
 	}
 
 }
