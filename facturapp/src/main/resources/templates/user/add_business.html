@@ -79,10 +79,18 @@
 					</div>
 					<div class="form-row">
 						<div class="form-group col-md-6">
-								<label for="logo" th:utext="#{text.user.add.enterprise.form.field.logo}"></label> 
-								<input type="file" class="form-control" id="logo" name="image" required>
+								<label for="logo" class="d-block" th:utext="#{text.user.add.enterprise.form.field.logo}"></label> 
+								<!--  <input type="file" class="" id="logo" name="image" required>
 									<small class="form-text text-danger"
 										th:if="${#fields.hasErrors('logo')}" th:errors="*{logo}"></small>
+								-->
+								<div class="uploader">
+								  <div id="inputval" class="input-value"></div>
+								  <label for="file_1"></label>
+								  <input id="file_1" class="upload" type="file" name="image" required>
+								  <small class="form-text text-danger"
+										th:if="${#fields.hasErrors('logo')}" th:errors="*{logo}"></small>
+								</div>
 						</div>
 					</div>
 					<button type="submit" class="btn btn-primary"
