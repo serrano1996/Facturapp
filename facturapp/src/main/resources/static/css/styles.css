@@ -182,7 +182,7 @@ ul ul a {
   border: 1px solid #ccc;
   width: 300px;
   position: relative;
-  height: 30px;
+  height: 35px;
   display: flex;
 }
 .uploader .input-value{
@@ -198,7 +198,7 @@ ul ul a {
   cursor: pointer;
   margin: 0;
   width: 30px;
-  height: 30px;
+  height: 35px;
   position: absolute;
   right: 0;
   background: #c3e3fc url('https://www.interactius.com/wp-content/uploads/2017/09/folder.png') no-repeat center;
