@@ -13,12 +13,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {	
-	
-	//public void addViewControllers(ViewControllerRegistry registry) {
-	//	registry.addViewController("/error_403").setViewName("error_403");
-	//}
-
-	
+		
 	@Bean
 	public LocaleResolver localeResolver() {
 		SessionLocaleResolver localeResolve = new SessionLocaleResolver();
