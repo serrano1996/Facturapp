@@ -3,6 +3,8 @@ package com.daw.facturapp.app.controllers;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -104,8 +106,8 @@ public class EnterpriseController {
 	}
 	
 	@PostMapping("/save")
-	public String save(@Valid Enterprise enterprise, Model model,
-			Authentication auth, BindingResult result,
+	public String save(@Valid Enterprise enterprise, BindingResult result,
+			Authentication auth, Model model,
 			@RequestParam("image") MultipartFile image,
 			SessionStatus status,
 			RedirectAttributes flash,
@@ -113,8 +115,7 @@ public class EnterpriseController {
 		User user = (User) userService.findByUsername(auth.getName());
 		
 		if(result.hasErrors()) {
-			model.addAttribute("title", enterprise.getName());
-			model.addAttribute("enterprise", enterprise);
+			System.out.println("malllll");
 			flash.addFlashAttribute("error", messageSource.getMessage("text.enterprise.alert.error.edit", null, locale));
 			return "redirect:/enterprise/" + enterprise.getId();
 		}
@@ -307,6 +308,7 @@ public class EnterpriseController {
 		if(result.hasErrors()) {
 			model.addAttribute("title", enterprise.getName());
 			model.addAttribute("enterprise", enterprise);
+			model.addAttribute("user", user);
 			return "enterprise/client/add_client";
 		}
 		
@@ -355,10 +357,15 @@ public class EnterpriseController {
 			return "redirect:/";
 		}
 		
-		// Verificación de campos vacios.
-		if(nif.equals("") || name.equals("") || 
+		Pattern patNIF = Pattern.compile("^[A-Za-z]?[0-9]{8}[A-Za-z]?$");
+		Matcher matNIF = patNIF.matcher(nif);
+		Pattern patPhone = Pattern.compile("^[0-9]{9}$");
+		Matcher matPhone = patPhone.matcher(phone);
+		
+		// Verificación de campos.
+		if(nif.equals("") || !matNIF.matches() || nif.length() != 9 || name.equals("") || 
 				address.equals("") || email.equals("") ||
-				phone.equals("")) {
+				phone.equals("") || !matPhone.matches()) {
 			flash.addFlashAttribute("error", 
 					messageSource.getMessage("text.client.alert.error.edit", null, locale));
 			return "redirect:/enterprise/" + client.getEnterprise().getId() + "/clients";

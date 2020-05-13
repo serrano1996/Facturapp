@@ -22,6 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="clients")
@@ -33,6 +35,8 @@ public class Client implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@Size(min=9, max=9)
+	@Pattern(regexp = "^[A-Za-z]?[0-9]{8}[A-Za-z]?$")
 	@NotBlank						
 	@Column
 	private String nif;
@@ -45,13 +49,17 @@ public class Client implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date createAt;
 	
+	@NotBlank
 	@Column
 	@Email
 	private String email;
-	
+
+	@NotBlank
+	@Pattern(regexp = "^[0-9]{9}$")
 	@Column
 	private String phone;
 	
+	@NotBlank
 	@Column
 	private String address;
 	

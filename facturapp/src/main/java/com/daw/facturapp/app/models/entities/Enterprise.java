@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name="enterprises")
@@ -30,6 +31,7 @@ public class Enterprise implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@Pattern(regexp = "^[A-Za-z]{1}[0-9]{8}$")
 	@NotBlank						
 	@Column
 	private String cif;
@@ -59,6 +61,7 @@ public class Enterprise implements Serializable {
 	@Column
 	private String email_contact;
 	
+	@Pattern(regexp = "^[0-9]{9}$")
 	@NotBlank								
 	@Column
 	private String phone_contact;
